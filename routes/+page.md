@@ -1,12 +1,12 @@
 ---
-title: A website should feel like a website
-description: Chippy is a tiny server-rendered Markdown website system written in Gleam.
+title: Server-side rendered Markdown
+description: Chippy is a server-side rendered dynamic website with Markdown files instead of a database.
 ---
 
 <section class="hero">
-  <p class="eyebrow">Markdown → HTML, on request</p>
-  <h1>A website should feel like <em>a website.</em></h1>
-  <p class="hero-copy">Chippy maps URLs to folders, renders Markdown on the server, and sends complete HTML to the browser. No database. No content build. No application pretending to be a document.</p>
+  <p class="eyebrow">Chippy</p>
+  <h1>Server-side rendered content. <em>Markdown instead of a database.</em></h1>
+  <p class="hero-copy">Chippy is a dynamic website system. URLs map to folders, content lives in Markdown files, and every request returns complete HTML.</p>
   <div class="hero-actions">
     <a class="primary-button" href="/posts/inside-chippy">See how Chippy works</a>
     <a class="text-link" href="https://github.com/bmehder/chippy">View the source →</a>
@@ -17,12 +17,12 @@ description: Chippy is a tiny server-rendered Markdown website system written in
 </section>
 
 <section class="principles">
-  <p class="eyebrow">Caveman simple, if it earns it</p>
-  <h2>Ordinary website technology, with a small amount of structure.</h2>
+  <p class="eyebrow">The model</p>
+  <h2>A direct path from request to response.</h2>
   <div class="principle-grid">
-    <article><span>01</span><h3>Files are the content store</h3><p>Routes, Markdown, layouts, partials, and assets remain visible on disk.</p></article>
-    <article><span>02</span><h3>Rendering happens at request time</h3><p>Change a Markdown file, save it, and refresh. There is no content compilation step.</p></article>
-    <article><span>03</span><h3>HTML stays welcome</h3><p>Use Markdown for prose and ordinary HTML when the page needs more control.</p></article>
+    <article><span>01</span><h3>Content is stored in files</h3><p>Markdown files take the place of database records and stay easy to edit, move, and version.</p></article>
+    <article><span>02</span><h3>Pages render on request</h3><p>Change a file, save it, and refresh. Chippy reads the current content every time.</p></article>
+    <article><span>03</span><h3>The response is HTML</h3><p>Layouts and partials wrap rendered Markdown in a complete server response.</p></article>
   </div>
 </section>
 

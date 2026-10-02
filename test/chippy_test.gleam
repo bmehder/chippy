@@ -12,14 +12,16 @@ pub fn renders_the_home_page_test() {
 
   html |> string.contains("<!doctype html>") |> should.be_true
   html
-  |> string.contains("<h1>A website should feel like <em>a website.</em></h1>")
+  |> string.contains(
+    "<h1>Server-side rendered content. <em>Markdown instead of a database.</em></h1>",
+  )
   |> should.be_true
-  html |> string.contains("Made with Markdown") |> should.be_true
+  html
+  |> string.contains("Server-rendered Markdown in Gleam")
+  |> should.be_true
   html |> string.contains("{{ content }}") |> should.be_false
   html
-  |> string.contains(
-    "<title>A website should feel like a website — Chippy</title>",
-  )
+  |> string.contains("<title>Server-side rendered Markdown — Chippy</title>")
   |> should.be_true
 }
 

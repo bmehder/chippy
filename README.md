@@ -1,14 +1,10 @@
 # Chippy
 
-> A tiny server-rendered Markdown website system written in Gleam.
+> A server-side rendered dynamic website with Markdown files instead of a database.
 
-Chippy is for ordinary, content-led websites. An HTTP request maps to a
-directory; Chippy reads its Markdown page at request time, renders it to HTML,
-inserts it into an HTML layout, and returns the complete document.
-
-There is no database, content build, client-side router, hydration layer, or
-JavaScript framework. Markdown is the normal authoring format, and ordinary
-HTML remains available whenever a page needs it.
+An HTTP request maps to a directory. Chippy reads the current Markdown file,
+renders it to HTML, inserts it into an HTML layout, and returns the complete
+document. Editing content does not require a database or a content build.
 
 ## Run it
 
