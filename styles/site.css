@@ -1,0 +1,67 @@
+@import "tailwindcss";
+@source "../routes";
+@source "../src";
+
+@theme {
+  --font-sans: "Avenir Next", Avenir, "Segoe UI", sans-serif;
+  --font-mono: "SFMono-Regular", Consolas, monospace;
+  --color-ink: #17201c;
+  --color-paper: #f4f0e6;
+  --color-moss: #315c42;
+  --color-lime: #c8ef73;
+  --color-clay: #d97950;
+}
+
+@layer base {
+  * { box-sizing: border-box; }
+  html { @apply scroll-smooth bg-paper text-ink; }
+  body { @apply m-0 min-h-screen bg-paper font-sans antialiased; background-image: radial-gradient(circle at 85% 0%, rgb(200 239 115 / .22), transparent 26rem); }
+  a { @apply underline decoration-moss/30 underline-offset-4 transition hover:decoration-moss; }
+  ::selection { @apply bg-lime text-ink; }
+}
+
+@layer components {
+  .site-header { @apply sticky top-0 z-20 border-b border-ink/10 bg-paper/90 backdrop-blur-lg; }
+  .header-inner { @apply mx-auto flex h-20 max-w-6xl items-center justify-between px-6 lg:px-10; }
+  .site-name { @apply flex items-center gap-3 font-bold no-underline; }
+  .site-name span { @apply grid size-9 place-items-center rounded-xl bg-ink font-mono text-sm text-lime; }
+  .site-nav { @apply flex gap-5 text-sm font-semibold; }
+  .site-nav a { @apply no-underline; }
+  .page-shell { @apply mx-auto max-w-6xl px-6 py-14 sm:py-20 lg:px-10; }
+  .prose { @apply max-w-3xl; }
+  .prose > h1 { @apply text-5xl leading-[.95] font-bold tracking-[-.055em] text-balance sm:text-7xl; }
+  .prose > h2 { @apply mt-16 text-3xl font-bold tracking-[-.03em] text-balance sm:text-4xl; }
+  .prose > p { @apply mt-6 text-lg leading-8 text-ink/75; }
+  .prose > ul, .prose > ol { @apply mt-6 space-y-2 pl-6 text-lg leading-8 text-ink/75; }
+  .prose > ul { @apply list-disc marker:text-clay; }
+  .prose > ol { @apply list-decimal marker:font-mono marker:text-moss; }
+  .prose code { @apply rounded-md bg-ink/6 px-1.5 py-1 font-mono text-[.88em] text-moss; }
+  .prose pre { @apply mt-8 overflow-x-auto rounded-2xl border border-ink/10 bg-ink p-6 text-paper shadow-xl shadow-ink/10; }
+  .prose pre code { @apply bg-transparent p-0 text-inherit; }
+  .prose > *:first-child { @apply mt-0; }
+  .hero { @apply relative w-[min(72rem,calc(100vw-3rem))] overflow-hidden rounded-[2rem] border border-ink/10 bg-ink px-7 py-16 text-paper shadow-2xl shadow-ink/15 sm:px-12 sm:py-24 lg:px-16; }
+  .hero::after { content: ""; @apply pointer-events-none absolute -right-20 -bottom-32 size-96 rounded-full border-[70px] border-lime/15; }
+  .eyebrow { @apply mb-6 font-mono text-xs font-bold tracking-[.16em] text-moss uppercase; }
+  .hero .eyebrow { @apply text-lime; }
+  .hero h1 { @apply max-w-4xl text-5xl leading-[.94] font-bold tracking-[-.055em] text-balance sm:text-7xl lg:text-8xl; }
+  .hero h1 em { @apply text-lime not-italic; }
+  .hero-copy { @apply mt-8 max-w-2xl text-lg leading-8 text-paper/70 sm:text-xl; }
+  .hero-actions { @apply mt-10 flex flex-wrap items-center gap-3; }
+  .primary-button { @apply rounded-full bg-lime px-5 py-3 text-sm font-bold text-ink no-underline hover:-translate-y-0.5; }
+  .text-link { @apply px-4 py-3 text-sm font-bold text-paper no-underline; }
+  .request-flow { @apply relative z-10 mt-16 flex flex-wrap items-center gap-3 font-mono text-xs text-paper/55; }
+  .request-flow span { @apply rounded-lg border border-paper/10 bg-paper/5 px-3 py-2 text-paper/80; }
+  .request-flow b { @apply text-lime; }
+  .principles { @apply w-[min(72rem,calc(100vw-3rem))] py-24 sm:py-32; }
+  .principles > h2 { @apply max-w-4xl text-4xl leading-tight font-bold tracking-[-.04em] sm:text-6xl; }
+  .principle-grid { @apply mt-14 grid overflow-hidden rounded-3xl border border-ink/10 bg-ink/10 md:grid-cols-3; gap: 1px; }
+  .principle-grid article { @apply flex min-h-72 flex-col bg-paper p-7; }
+  .principle-grid span { @apply font-mono text-xs font-bold text-clay; }
+  .principle-grid h3 { @apply mt-auto text-xl font-bold; }
+  .principle-grid p { @apply mt-4 text-sm leading-6 text-ink/65; }
+  .callout { @apply mt-12 rounded-2xl border border-moss/20 bg-moss/5 p-6 text-base leading-7 text-ink/75; }
+  .callout strong { @apply block text-ink; }
+  .site-footer { @apply mt-20 border-t border-ink/10; }
+  .footer-inner { @apply mx-auto flex min-h-28 max-w-6xl flex-col justify-center gap-1 px-6 text-sm text-ink/55 sm:flex-row sm:items-center sm:justify-between lg:px-10; }
+  .footer-inner p:first-child { @apply font-bold text-ink; }
+}

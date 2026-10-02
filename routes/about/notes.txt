@@ -1,0 +1,1 @@
+This static file is colocated with the About route.

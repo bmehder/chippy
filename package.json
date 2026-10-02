@@ -1,0 +1,13 @@
+{
+  "name": "chippy",
+  "private": true,
+  "scripts": {
+    "build:css": "tailwindcss -i ./styles/site.css -o ./assets/site.css --minify",
+    "watch:css": "tailwindcss -i ./styles/site.css -o ./assets/site.css --watch",
+    "check": "npm run build:css && gleam format --check src test && gleam test"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.0",
+    "tailwindcss": "^4.3.0"
+  }
+}

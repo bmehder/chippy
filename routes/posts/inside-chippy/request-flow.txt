@@ -1,0 +1,6 @@
+GET /posts/inside-chippy
+  -> routes/posts/inside-chippy/+page.md
+  -> metadata + Markdown
+  -> HTML
+  -> routes/+layout.html
+  -> HTTP 200
