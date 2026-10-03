@@ -51,17 +51,19 @@ currently fall back to the root layout and root partials.
 
 ## Metadata
 
-Chippy currently recognizes two required fields:
+Chippy recognizes two required fields and one optional flag:
 
 ```markdown
 ---
 title: About
 description: Why this page exists.
+noindex: false
 ---
 ```
 
-The layout receives `{{ title }}`, `{{ description }}`, and `{{ content }}`.
-Metadata stays deliberately predefined and small.
+The layout receives `{{ title }}`, `{{ description }}`, `{{ robots }}`, and
+`{{ content }}`. Set `noindex: true` to add a robots directive and omit the page
+from the sitemap. Metadata stays deliberately predefined and small.
 
 ## Assets and Tailwind
 
@@ -76,6 +78,16 @@ separate from content rendering: changing Markdown never requires a build.
 npm run watch:css
 ```
 
+## Built-in routes
+
+- `/sitemap.xml` discovers valid `+page.md` files at request time. It uses the
+  request host and forwarded protocol/host headers to produce absolute URLs.
+- `/favicon.svg` serves `assets/favicon.svg` when the site provides one. If it
+  does not, Chippy returns its built-in SVG favicon.
+
+Missing pages and unexpected rendering failures use the site's root layout and
+partials, return the correct `404` or `500` status, and are marked `noindex`.
+
 ## Learn the codebase
 
 - Read [DEVELOPMENT.md](DEVELOPMENT.md) to set up a development environment.
@@ -87,5 +99,5 @@ npm run watch:css
 npm run check
 ```
 
-Sitemap generation and a favicon fallback are planned next. Collections and
-other capabilities will be added only when the demo site genuinely needs them.
+Collections and other capabilities will be added only when the demo site
+genuinely needs them.

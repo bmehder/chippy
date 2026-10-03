@@ -1,4 +1,6 @@
+import chippy/favicon
 import chippy/page
+import chippy/sitemap
 import gleam/bytes_tree
 import gleam/http
 import gleam/http/request.{type Request}
@@ -20,34 +22,114 @@ pub fn handle(
   request: Request(mist.Connection),
 ) -> Response(mist.ResponseData) {
   case request.method {
-    http.Get -> get(request.path)
+    http.Get -> get(request)
     _ ->
       text_response(405, "Method not allowed")
       |> response.set_header("allow", "GET")
   }
 }
 
-fn get(path: String) -> Response(mist.ResponseData) {
-  case page.render(path) {
-    Ok(html) -> html_response(200, html)
-    Error(page.NotFound) -> asset_or_not_found(path)
-    Error(page.UnsafePath) -> text_response(400, "Bad request")
-    Error(_) -> text_response(500, "Could not render this page")
+fn get(request: Request(mist.Connection)) -> Response(mist.ResponseData) {
+  case request.path {
+    "/sitemap.xml" -> sitemap_response(request)
+    "/favicon.svg" -> favicon_response()
+    path ->
+      case page.render(path) {
+        Ok(html) -> html_response(200, html)
+        Error(page.NotFound) -> asset_or_not_found(path)
+        Error(page.UnsafePath) ->
+          error_response(400, "Bad request", "The requested path is not valid.")
+        Error(_) ->
+          error_response(
+            500,
+            "Rendering failed",
+            "Chippy could not render this page.",
+          )
+      }
   }
 }
 
 fn asset_or_not_found(path: String) -> Response(mist.ResponseData) {
   case page.asset_path(path) {
-    Ok(path) ->
-      case mist.send_file(path, offset: 0, limit: None) {
-        Ok(body) ->
-          response.new(200)
-          |> response.set_header("content-type", content_type(path))
-          |> response.set_header("x-content-type-options", "nosniff")
-          |> response.set_body(body)
-        Error(_) -> text_response(404, "Not found")
+    Ok(path) -> file_response(path)
+    Error(_) ->
+      error_response(404, "Page not found", "There is no page at this address.")
+  }
+}
+
+fn favicon_response() -> Response(mist.ResponseData) {
+  case page.asset_path("/assets/favicon.svg") {
+    Ok(path) -> file_response(path)
+    Error(_) ->
+      response.new(200)
+      |> response.set_header("content-type", "image/svg+xml")
+      |> response.set_header("cache-control", "public, max-age=3600")
+      |> response.set_header("x-content-type-options", "nosniff")
+      |> response.set_body(mist.Bytes(bytes_tree.from_string(favicon.svg)))
+  }
+}
+
+fn sitemap_response(
+  request: Request(mist.Connection),
+) -> Response(mist.ResponseData) {
+  case page.discover_routes() {
+    Ok(routes) ->
+      response.new(200)
+      |> response.set_header("content-type", "application/xml; charset=utf-8")
+      |> response.set_body(
+        mist.Bytes(
+          bytes_tree.from_string(sitemap.render(request_origin(request), routes)),
+        ),
+      )
+    Error(_) ->
+      error_response(
+        500,
+        "Sitemap unavailable",
+        "Chippy could not discover the site's routes.",
+      )
+  }
+}
+
+fn request_origin(request: Request(body)) -> String {
+  let scheme = case request.get_header(request, "x-forwarded-proto") {
+    Ok(value) -> value
+    Error(Nil) -> "http"
+  }
+  let host = case request.get_header(request, "x-forwarded-host") {
+    Ok(value) -> value
+    Error(Nil) ->
+      case request.get_header(request, "host") {
+        Ok(value) -> value
+        Error(Nil) -> "localhost:8000"
       }
-    Error(_) -> text_response(404, "Not found")
+  }
+  scheme <> "://" <> host
+}
+
+fn file_response(path: String) -> Response(mist.ResponseData) {
+  case mist.send_file(path, offset: 0, limit: None) {
+    Ok(body) ->
+      response.new(200)
+      |> response.set_header("content-type", content_type(path))
+      |> response.set_header("x-content-type-options", "nosniff")
+      |> response.set_body(body)
+    Error(_) ->
+      error_response(
+        404,
+        "File not found",
+        "The requested file is unavailable.",
+      )
+  }
+}
+
+fn error_response(
+  status: Int,
+  heading: String,
+  message: String,
+) -> Response(mist.ResponseData) {
+  case page.render_error(heading, message, heading, message) {
+    Ok(html) -> html_response(status, html)
+    Error(_) -> text_response(status, message)
   }
 }
 

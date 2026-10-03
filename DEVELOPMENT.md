@@ -57,9 +57,12 @@ Mist request
 ```
 
 - `src/chippy/page.gleam` owns safe path resolution, metadata, Markdown,
-  layouts, partials, and static-file resolution.
+  layouts, partials, route discovery, errors, and static-file resolution.
 - `src/chippy/server.gleam` owns HTTP methods, statuses, headers, content types,
-  and Mist response bodies.
+  built-in routes, request-origin detection, and Mist response bodies.
+- `src/chippy/sitemap.gleam` turns discovered indexable routes into XML.
+- `src/chippy/favicon.gleam` contains the fallback used when a site does not
+  provide `assets/favicon.svg`.
 - `src/chippy.gleam` starts the listener and contains no domain logic.
 
 Keep filesystem and HTTP failures explicit. Prefer extending the current
@@ -72,15 +75,18 @@ The project website is also the primary fixture:
 - `/` demonstrates mixed Markdown and HTML.
 - `/about` demonstrates directory routing and a colocated file.
 - `/posts/inside-chippy` documents the implementation using the implementation.
+- `/sitemap.xml` demonstrates filesystem-derived infrastructure output.
+- `/favicon.svg` demonstrates the built-in asset fallback.
 
 Focused tests live in `test/chippy_test.gleam`. They should not require a live
 socket.
 
-## Near-term work
+## Current content contract
 
-- Generate a sitemap from valid route directories.
-- Provide a favicon fallback while allowing a site-owned favicon to override it.
-- Grow the predefined metadata only when an actual page needs another field.
+Every `+page.md` requires non-empty `title` and `description` strings. The
+optional `noindex` field accepts only `true` or `false`; an omitted value means
+`false`. Invalid metadata fails rendering explicitly and also prevents Chippy
+from publishing an incomplete sitemap.
 
-These are product capabilities, not reasons to introduce a plugin or schema
-system.
+Keep this contract, README.md, and the Inside Chippy article synchronized when
+adding metadata or built-in routes.
