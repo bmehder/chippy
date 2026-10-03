@@ -58,6 +58,10 @@ Open `src/chippy/page.gleam`. `safe_relative_path` removes the leading slash and
 rejects parent-directory or backslash traversal. `route_directory` then places
 the safe path beneath `routes/`.
 
+Simplifile provides the UTF-8 reads and file or directory checks at this
+boundary. Chippy deliberately owns the recursive walk because it must skip
+private route directories before descending into them.
+
 Conceptually:
 
 ```text
@@ -99,9 +103,20 @@ filesystem convention rather than a general query or taxonomy system.
 
 ## 6. Render Markdown
 
-Mörk converts the body to HTML. Raw HTML is intentionally allowed because route
-files are trusted site source, not untrusted visitor input. That is why this
-guide can use ordinary Markdown while the homepage uses richer HTML sections.
+Open `src/chippy/markdown.gleam`. It keeps Mörk's configuration in one place and
+enables the authoring features that fit a content site:
+
+| Markdown feature | Behavior |
+| --- | --- |
+| CommonMark and footnotes | Available by default |
+| Heading IDs | Stable fragment links for headings |
+| Tables and task lists | Useful structured content without raw HTML |
+| Automatic links | Plain web addresses become links |
+
+Emoji shortcode expansion stays off because it would silently alter ordinary
+prose. Raw HTML remains intentionally allowed because route files are trusted
+site source, not untrusted visitor input. That is why this guide can use
+ordinary Markdown while the homepage uses richer HTML sections.
 
 ## 7. Apply a layout and partials
 
@@ -138,6 +153,10 @@ they enter the layout.
 Files under `routes/_partials/` are available through markers such as `{{
 partial:header }}`. This is intentionally not a general template language. The
 layout remains an HTML file with a few obvious holes.
+
+The shared header contains normal desktop navigation and a mobile menu made
+from native `details` and `summary` elements. The browser handles opening,
+closing, keyboard focus, and disclosure state without client-side JavaScript.
 
 ## 8. Reach the HTTP boundary
 
@@ -210,7 +229,8 @@ page, directory routing, both asset locations, private implementation files,
 traversal rejection, partials, metadata insertion, site configuration,
 collection rendering, publication-date validation, route discovery, sitemap
 filtering, `noindex`, contact outcomes, global favicon serving, and
-layout-rendered errors.
+layout-rendered errors. A focused Markdown test also protects heading IDs,
+tables, task lists, and automatic links; the page test protects the mobile menu.
 
 Run the complete project check with:
 

@@ -1,11 +1,11 @@
 import chippy/document.{type Document, Document}
+import chippy/markdown
 import chippy/site.{type Site, absolute_url}
 import chippy/template
 import gleam/list
 import gleam/option.{None, Some}
 import gleam/result
 import gleam/string
-import mork
 import simplifile
 
 pub type PageError {
@@ -44,7 +44,7 @@ pub fn render_with(
     request_path,
   ))
   let markdown = insertions |> list.fold(markdown, insert_named)
-  let content = markdown |> mork.parse |> mork.to_html
+  let content = markdown.render(markdown)
   Ok(template.render(
     layout,
     document,

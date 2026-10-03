@@ -29,6 +29,10 @@ pub fn renders_the_home_page_test() {
   html
   |> string.contains("<title>Server-side rendered Markdown — Chippy</title>")
   |> should.be_true
+  html |> string.contains("class=\"mobile-menu\"") |> should.be_true
+  html
+  |> string.contains("aria-label=\"Mobile navigation\"")
+  |> should.be_true
 }
 
 pub fn discovers_directory_routes_test() {
@@ -77,7 +81,9 @@ pub fn serves_global_assets_test() {
 
 pub fn maps_directories_to_routes_test() {
   let assert Ok(html) = page.render("/about", test_support.demo_site())
-  html |> string.contains("<h1>About Chippy</h1>") |> should.be_true
+  html
+  |> string.contains("<h1 id=\"About-Chippy\">About Chippy</h1>")
+  |> should.be_true
   html |> string.contains("<title>About — Chippy</title>") |> should.be_true
 }
 

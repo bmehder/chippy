@@ -92,6 +92,8 @@ routes/
 - `+layout.html` is ordinary HTML with a `{{ content }}` insertion point.
   The root file owns the complete document; nested files are HTML fragments.
 - `{{ partial:name }}` inserts `routes/_partials/name.html`.
+- The included header has desktop navigation and an accessible, no-JavaScript
+  mobile menu built with native HTML.
 - Ordinary files inside a route folder are served at the corresponding URL.
   For example, `routes/about/notes.txt` is available at `/about/notes.txt`.
 - Files beginning with `+` or `_` are implementation files and are never
@@ -132,6 +134,10 @@ sitemap. Metadata stays deliberately predefined and small.
 
 `published` must use `YYYY-MM-DD`. It gives collection indexes a predictable
 display value and makes newest-first ordering a simple string comparison.
+
+Markdown supports CommonMark plus footnotes, stable heading IDs, tables, task
+lists, and automatic links. Raw HTML is allowed because route files are trusted
+site source rather than visitor input.
 
 ## Collections
 
@@ -179,6 +185,22 @@ partials, return the correct `404` or `500` status, and are marked `noindex`.
 - Run the site and open `/posts/inside-chippy` for a request-by-request tour.
 - Open `/about` for the complete feature inventory and intentional omissions.
 - Submit `/contact` to see both simulated form outcomes.
+
+## Dependencies
+
+The included packages each have a narrow job:
+
+- Simplifile reads route, layout, partial, asset, and configuration files and
+  checks filesystem entries. Chippy keeps its own traversal so private route
+  directories can be pruned while they are walked.
+- Mörk parses frontmatter and renders Markdown with the useful authoring
+  extensions listed above.
+- Mist serves HTTP responses and files and size-limits the contact request body.
+- Tom parses `site.toml`; Envoy reads host and port settings; Gleam Crypto
+  supplies the contact demo's random outcome.
+
+Using a dependency fully means using the parts that fit Chippy's small contract,
+not wrapping every API it exposes.
 
 ## Check the project
 

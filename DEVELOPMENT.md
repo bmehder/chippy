@@ -64,7 +64,7 @@ Mist request
   → site.toml
   → chippy/page.gleam
   → routes/<path>/+page.md
-  → chippy/document.gleam and Mörk
+  → chippy/document.gleam and chippy/markdown.gleam
   → chippy/template.gleam
   → Mist response
 ```
@@ -73,6 +73,9 @@ Mist request
   resolution, collections, route discovery, and static-file resolution.
 - `src/chippy/document.gleam` owns the page document type, frontmatter parsing,
   and metadata validation.
+- `src/chippy/markdown.gleam` owns the Mörk configuration and enables heading
+  IDs, tables, task lists, and automatic links in addition to CommonMark and
+  footnotes.
 - `src/chippy/template.gleam` composes nested layouts and partials, escapes
   inserted values, and renders document metadata.
 - `src/chippy/contact.gleam` contains the demo form's simulated outcome and
@@ -107,6 +110,9 @@ The project website is also the primary fixture:
 - `/sitemap.xml` demonstrates filesystem-derived infrastructure output.
 - `/assets/favicon.svg` demonstrates a site-wide static asset.
 
+The shared header demonstrates responsive navigation with native `details` and
+`summary` elements. It needs no browser-side JavaScript.
+
 Focused tests are split by module under `test/`. `test/chippy_test.gleam` is
 only their Gleeunit entry point. The tests should not require a live socket.
 
@@ -128,3 +134,12 @@ canonical public origin used in page metadata and the sitemap.
 
 Keep this contract, README.md, and the Inside Chippy article synchronized when
 adding metadata or built-in routes.
+
+## Package boundaries
+
+Simplifile is Chippy's read-only filesystem boundary. It reads content and
+templates and identifies files and directories; route discovery remains in
+Chippy so private directory pruning stays explicit. Mörk owns Markdown parsing,
+Mist owns HTTP and file responses, Tom owns TOML parsing, Envoy owns environment
+access, and Gleam Crypto supplies randomness for the contact demonstration.
+Prefer extending those focused boundaries over adding overlapping helpers.

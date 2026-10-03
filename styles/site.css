@@ -28,9 +28,16 @@
   .site-name { @apply flex items-center gap-3 font-bold no-underline; }
   .site-name span { @apply grid size-9 place-items-center rounded-xl bg-accent font-mono text-sm text-night; }
   .site-name .site-word { @apply hidden h-auto w-auto bg-transparent font-sans text-text sm:block; }
-  .site-nav { @apply flex items-center gap-3 text-xs font-semibold sm:gap-5 sm:text-sm; }
+  .site-nav { @apply hidden items-center gap-5 text-sm font-semibold md:flex; }
   .site-nav a { @apply text-muted no-underline hover:text-text; }
   .site-nav .github-link { @apply flex items-center; }
+  .mobile-menu { @apply relative md:hidden; }
+  .mobile-menu summary { list-style: none; }
+  .mobile-menu summary::-webkit-details-marker { display: none; }
+  .menu-toggle { @apply flex cursor-pointer items-center gap-2 rounded-full border border-text/15 bg-surface px-4 py-2 text-sm font-bold text-text select-none hover:border-accent/40; }
+  .mobile-menu[open] .menu-toggle { @apply border-accent/40 bg-raised; }
+  .mobile-nav { @apply absolute top-[calc(100%+0.75rem)] right-0 grid min-w-52 overflow-hidden rounded-2xl border border-text/15 bg-surface p-2 text-sm font-semibold shadow-2xl shadow-black/40; }
+  .mobile-nav a { @apply flex items-center justify-between rounded-xl px-4 py-3 text-muted no-underline hover:bg-text/5 hover:text-text; }
   .page-shell { @apply mx-auto max-w-6xl px-6 py-14 sm:py-20 lg:px-10; }
   .prose { @apply max-w-3xl; }
   .prose > h1 { @apply text-5xl leading-[.95] font-bold tracking-[-.055em] text-balance sm:text-7xl; }
@@ -40,6 +47,10 @@
   .prose > ul, .prose > ol { @apply mt-6 space-y-2 pl-6 text-lg leading-8 text-muted; }
   .prose > ul { @apply list-disc marker:text-warm; }
   .prose > ol { @apply list-decimal marker:font-mono marker:text-accent; }
+  .prose > table { @apply mt-8 w-full border-collapse overflow-hidden text-left text-sm text-muted; }
+  .prose th { @apply border-b border-text/20 bg-surface px-4 py-3 font-bold text-text; }
+  .prose td { @apply border-b border-text/10 px-4 py-3 align-top; }
+  .prose input[type="checkbox"] { @apply mr-2 accent-accent; }
   .prose code { @apply rounded-md bg-text/6 px-1.5 py-1 font-mono text-[.88em] text-accent; }
   .prose pre { @apply mt-8 overflow-x-auto rounded-2xl border border-text/10 bg-surface p-6 text-text shadow-xl shadow-black/20; }
   .prose pre code { @apply bg-transparent p-0 text-inherit; }

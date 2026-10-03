@@ -25,6 +25,7 @@ document.
 - Renders Markdown on every request instead of generating a static site
 - Requires a title, description, and publication date in page frontmatter
 - Supports an optional `noindex` flag
+- Supports footnotes, heading IDs, tables, task lists, and automatic links
 - Allows trusted raw HTML inside Markdown
 - Builds collection indexes from immediate child routes, newest first
 
@@ -35,6 +36,7 @@ document.
 - Serves site-wide files from `assets/`
 - Serves ordinary files colocated inside route folders
 - Compiles the included dark theme from Tailwind source CSS
+- Includes responsive desktop and mobile navigation without client JavaScript
 - Ships this repository as a working demo site
 
 ### Metadata and discovery
