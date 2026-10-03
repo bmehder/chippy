@@ -75,7 +75,9 @@ pub fn discovers_directory_routes_test() {
 
   paths |> list.contains("/") |> should.be_true
   paths |> list.contains("/about") |> should.be_true
+  paths |> list.contains("/posts/gleam-or-php") |> should.be_true
   paths |> list.contains("/posts/inside-chippy") |> should.be_true
+  paths |> list.contains("/posts/request-time-rendering") |> should.be_true
 }
 
 pub fn sitemap_omits_noindex_routes_test() {
@@ -131,6 +133,8 @@ pub fn provides_a_fallback_favicon_test() {
 pub fn serves_colocated_assets_test() {
   page.asset_path("/about/notes.txt")
   |> should.equal(Ok("routes/about/notes.txt"))
+  page.asset_path("/posts/gleam-or-php/gleam-or-php.webp")
+  |> should.equal(Ok("routes/posts/gleam-or-php/gleam-or-php.webp"))
 }
 
 pub fn serves_global_assets_test() {
@@ -150,7 +154,13 @@ pub fn renders_a_collection_from_child_routes_test() {
 
   html |> string.contains("class=\"collection\"") |> should.be_true
   html
+  |> string.contains("href=\"/posts/gleam-or-php\"")
+  |> should.be_true
+  html
   |> string.contains("href=\"/posts/inside-chippy\"")
+  |> should.be_true
+  html
+  |> string.contains("href=\"/posts/request-time-rendering\"")
   |> should.be_true
   html
   |> string.contains("<time datetime=\"2026-10-03\">")
@@ -161,12 +171,14 @@ pub fn renders_a_collection_from_child_routes_test() {
 pub fn composes_nested_route_layouts_test() {
   let assert Ok(index) = page.render("/posts", demo_site())
   let assert Ok(article) = page.render("/posts/inside-chippy", demo_site())
+  let assert Ok(comparison) = page.render("/posts/gleam-or-php", demo_site())
   let assert Ok(about) = page.render("/about", demo_site())
 
   index |> string.contains("class=\"posts-layout\"") |> should.be_true
   index |> string.contains("{{ content }}") |> should.be_false
   article |> string.contains("class=\"posts-layout\"") |> should.be_true
   article |> string.contains("<!doctype html>") |> should.be_true
+  comparison |> string.contains("class=\"posts-layout\"") |> should.be_true
   about |> string.contains("class=\"posts-layout\"") |> should.be_false
 }
 

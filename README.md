@@ -62,15 +62,25 @@ The root page currently demonstrates the route convention:
 routes/
 ├── +page.md
 ├── +layout.html
+├── home.webp
 ├── about/
 │   ├── +page.md
+│   ├── about.webp
 │   └── notes.txt
 ├── posts/
 │   ├── +page.md
 │   ├── +layout.html
-│   └── inside-chippy/
+│   ├── posts.webp
+│   ├── gleam-or-php/
+│   │   ├── +page.md
+│   │   └── gleam-or-php.webp
+│   ├── inside-chippy/
+│   │   ├── +page.md
+│   │   ├── inside-chippy.webp
+│   │   └── request-flow.txt
+│   └── request-time-rendering/
 │       ├── +page.md
-│       └── request-flow.txt
+│       └── request-time-rendering.webp
 └── _partials/
     ├── footer.html
     └── header.html
@@ -87,8 +97,9 @@ routes/
 
 The included `routes/about/+page.md` maps naturally to `/about`. Layouts compose
 from the root down to the requested route, so the posts layout wraps both
-`/posts` and `/posts/inside-chippy`. A directory without its own layout simply
-inherits the layouts above it. Root partials remain available throughout.
+`/posts` and every article beneath it. A directory without its own layout
+simply inherits the layouts above it. Root partials remain available
+throughout.
 
 ## Metadata
 
@@ -128,7 +139,9 @@ pagination, categories, or feed format.
 
 Site-wide static files live under `assets/` and are served from `/assets/`.
 Ordinary files may also live inside a route folder, where their URL follows the
-route. Chippy does not transform images or other assets.
+route. The demo illustrations are pre-optimized WebP files colocated with their
+pages. Chippy serves them unchanged; it does not transform images or other
+assets at runtime.
 
 Tailwind compiles `styles/site.css` to `assets/site.css`. CSS compilation is
 separate from content rendering: changing Markdown never requires a build.
@@ -152,6 +165,7 @@ partials, return the correct `404` or `500` status, and are marked `noindex`.
 - Read [DEVELOPMENT.md](DEVELOPMENT.md) to set up a development environment.
 - Read [DEPLOYMENT.md](DEPLOYMENT.md) for the container and Fly.io deployment.
 - Run the site and open `/posts/inside-chippy` for a request-by-request tour.
+- Open `/about` for the complete feature inventory and intentional omissions.
 
 ## Check the project
 

@@ -17,6 +17,10 @@ published: 2026-10-03
   </div>
 </section>
 
+<figure class="page-image page-image-wide">
+  <img src="/home.webp" alt="A web request flowing through route folders and Markdown into a finished browser page" width="1280" height="854" decoding="async" fetchpriority="high">
+</figure>
+
 <section class="principles">
   <p class="eyebrow">The model</p>
   <h2>A direct path from request to response.</h2>
@@ -36,9 +40,10 @@ routes/
 └── posts/
     ├── +page.md             → /posts
     ├── +layout.html         → wraps every /posts route
-    └── inside-chippy/
-        ├── +page.md         → /posts/inside-chippy
-        └── request-flow.txt → /posts/inside-chippy/request-flow.txt
+    ├── inside-chippy/
+    │   ├── +page.md         → /posts/inside-chippy
+    │   └── request-flow.txt → /posts/inside-chippy/request-flow.txt
+    └── …                    → more article folders
 ```
 
 Files beginning with `+` describe Chippy. Ordinary files are served normally,

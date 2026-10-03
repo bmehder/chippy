@@ -38,7 +38,9 @@ When changing classes or `styles/site.css`, run this in a second terminal:
 npm run watch:css
 ```
 
-Tailwind is the only asset build. Images and other files are served unchanged.
+Tailwind is the only built-in asset build. Images and other files are served
+unchanged. Optimize production images before adding them; the demo uses WebP
+files colocated with their pages.
 
 ## Complete verification
 
@@ -92,6 +94,9 @@ The project website is also the primary fixture:
 - `/` demonstrates mixed Markdown and HTML.
 - `/about` demonstrates directory routing and a colocated file.
 - `/posts/inside-chippy` documents the implementation using the implementation.
+- `/posts/gleam-or-php` records the language tradeoffs without treating PHP as
+  an inferior implementation.
+- `/posts/request-time-rendering` explains the central rendering decision.
 - `/posts` demonstrates a request-time collection and, with its children, a
   composed route layout.
 - `/sitemap.xml` demonstrates filesystem-derived infrastructure output.

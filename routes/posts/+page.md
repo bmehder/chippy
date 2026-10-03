@@ -11,4 +11,8 @@ published: 2026-10-03
 Notes about building ordinary server-rendered websites with Markdown and
 Gleam. This list is discovered from the route folders on every request.
 
+<figure class="page-image">
+  <img src="/posts/posts.webp" alt="Article cards emerging from a stack of route folders" width="1280" height="854" loading="lazy" decoding="async">
+</figure>
+
 {{ collection }}

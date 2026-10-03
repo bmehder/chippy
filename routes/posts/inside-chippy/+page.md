@@ -1,12 +1,16 @@
 ---
 title: Inside Chippy
 description: Follow a request from a URL through a Markdown file and layout to a complete HTML response.
-published: 2026-10-03
+published: 2026-10-01
 ---
 
 <p class="eyebrow">A guided code tour</p>
 
 # Inside Chippy
+
+<figure class="page-image">
+  <img src="/posts/inside-chippy/inside-chippy.webp" alt="A request passing through Markdown and nested layout layers to become a complete page" width="1280" height="854" loading="lazy" decoding="async">
+</figure>
 
 This guide follows one request through the complete project: from `GET
 /posts/inside-chippy`, through a directory and Markdown document, to HTML served
@@ -158,8 +162,10 @@ An ordinary file placed beside a page is colocated with its route. For example,
 the source file beside this guide is available as
 [request-flow.txt](/posts/inside-chippy/request-flow.txt).
 
-There is no image optimizer or generalized asset build. Tailwind compiles one
-CSS file; everything else is served as an ordinary file.
+There is no image optimizer or generalized asset build. The illustration on
+this article was optimized before it entered the repository, then colocated
+beside `+page.md`. Tailwind compiles one CSS file; everything else is served as
+an ordinary file.
 
 ## 10. Discover the sitemap
 

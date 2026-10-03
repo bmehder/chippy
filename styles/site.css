@@ -33,6 +33,7 @@
   .prose { @apply max-w-3xl; }
   .prose > h1 { @apply text-5xl leading-[.95] font-bold tracking-[-.055em] text-balance sm:text-7xl; }
   .prose > h2 { @apply mt-16 text-3xl font-bold tracking-[-.03em] text-balance sm:text-4xl; }
+  .prose > h3 { @apply mt-10 text-xl font-bold tracking-[-.02em] text-balance sm:text-2xl; }
   .prose > p { @apply mt-6 text-lg leading-8 text-muted; }
   .prose > ul, .prose > ol { @apply mt-6 space-y-2 pl-6 text-lg leading-8 text-muted; }
   .prose > ul { @apply list-disc marker:text-warm; }
@@ -62,6 +63,9 @@
   .principle-grid p { @apply mt-4 text-sm leading-6 text-muted; }
   .callout { @apply mt-12 rounded-2xl border border-accent/20 bg-accent/5 p-6 text-base leading-7 text-muted; }
   .callout strong { @apply block text-text; }
+  .page-image { @apply my-10 overflow-hidden rounded-3xl border border-text/10 bg-surface shadow-2xl shadow-black/25; }
+  .page-image img { @apply block h-auto w-full; }
+  .page-image-wide { @apply w-[min(72rem,calc(100vw-3rem))]; }
   .collection { @apply mt-12 grid gap-5; }
   .collection-entry { @apply rounded-2xl border border-text/10 bg-surface p-7; }
   .collection-entry time { @apply font-mono text-xs font-bold tracking-[.08em] text-warm; }
