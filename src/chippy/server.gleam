@@ -1,8 +1,8 @@
+import chippy/contact
 import chippy/page
 import chippy/site as site_config
 import chippy/sitemap
 import gleam/bytes_tree
-import gleam/crypto
 import gleam/http
 import gleam/http/request.{type Request}
 import gleam/http/response.{type Response}
@@ -53,8 +53,8 @@ fn post(
     "/contact" ->
       case mist.read_body(request, max_body_limit: 64_000) {
         Ok(_) -> {
-          let outcome = random_contact_outcome()
-          case page.render_contact(site, outcome) {
+          let outcome = contact.random_outcome()
+          case contact.render(site, outcome) {
             Ok(html) -> html_response(200, html)
             Error(_) ->
               error_response(
@@ -76,13 +76,6 @@ fn post(
     _ ->
       text_response(405, "Method not allowed")
       |> response.set_header("allow", "GET")
-  }
-}
-
-fn random_contact_outcome() -> page.ContactOutcome {
-  case crypto.strong_random_bytes(1) {
-    <<byte>> if byte < 128 -> page.ContactFailed
-    _ -> page.ContactSucceeded
   }
 }
 

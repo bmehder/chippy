@@ -64,16 +64,21 @@ Mist request
   → site.toml
   → chippy/page.gleam
   → routes/<path>/+page.md
-  → Mörk
-  → +layout.html and _partials/*.html
+  → chippy/document.gleam and Mörk
+  → chippy/template.gleam
   → Mist response
 ```
 
-- `src/chippy/page.gleam` owns safe path resolution, metadata, Markdown,
-  nested layout composition, partials, route discovery, errors, and static-file
-  resolution.
+- `src/chippy/page.gleam` orchestrates page rendering and owns safe path
+  resolution, collections, route discovery, and static-file resolution.
+- `src/chippy/document.gleam` owns the page document type, frontmatter parsing,
+  and metadata validation.
+- `src/chippy/template.gleam` composes nested layouts and partials, escapes
+  inserted values, and renders document metadata.
+- `src/chippy/contact.gleam` contains the demo form's simulated outcome and
+  supplies its feedback through the page renderer's named-insertion API.
 - `src/chippy/server.gleam` owns HTTP methods, statuses, headers, content types,
-  built-in routes, site configuration loading, and Mist response bodies.
+  the sitemap route, site configuration loading, and Mist response bodies.
 - `src/chippy/server_config.gleam` validates the optional `HOST` and `PORT`
   environment values and checks that the selected address is available before
   Mist starts.
@@ -102,8 +107,8 @@ The project website is also the primary fixture:
 - `/sitemap.xml` demonstrates filesystem-derived infrastructure output.
 - `/assets/favicon.svg` demonstrates a site-wide static asset.
 
-Focused tests live in `test/chippy_test.gleam`. They should not require a live
-socket.
+Focused tests are split by module under `test/`. `test/chippy_test.gleam` is
+only their Gleeunit entry point. The tests should not require a live socket.
 
 ## Current content contract
 

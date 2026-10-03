@@ -73,10 +73,11 @@ that can drift away from the content tree.
 
 ## 4. Read and model the document
 
-`page.render` reads `+page.md` on every request. Mörk separates the frontmatter
-from the body. Chippy recognizes three required metadata fields: `title`,
-`description`, and an ISO `published` date. It also recognizes the optional
-boolean `noindex` flag.
+`page.render` reads `+page.md` on every request and passes the source to
+`src/chippy/document.gleam`. Mörk separates the frontmatter from the body.
+Chippy recognizes three required metadata fields: `title`, `description`, and
+an ISO `published` date. It also recognizes the optional boolean `noindex`
+flag.
 
 The parser returns a `Result`. A missing page becomes `NotFound`; malformed or
 missing metadata becomes `InvalidMetadata`. These errors are values passed to
@@ -104,9 +105,10 @@ guide can use ordinary Markdown while the homepage uses richer HTML sections.
 
 ## 7. Apply a layout and partials
 
-Chippy collects `+layout.html` files from the root down to the requested route.
-The root layout owns the doctype, document head, header, and footer. Nested
-layouts are ordinary HTML fragments that wrap the next `{{ content }}` slot.
+`src/chippy/template.gleam` collects `+layout.html` files from the root down to
+the requested route. The root layout owns the doctype, document head, header,
+and footer. Each nested layout is an HTML fragment that wraps the next `{{ content }}`
+slot.
 
 For this page, composition follows the filesystem:
 
@@ -201,12 +203,13 @@ a complete HTML page. Error documents always receive `noindex`, preventing a
 
 ## 13. Read the tests beside the code
 
-Open `test/chippy_test.gleam`. The tests render pages and resolve assets without
-starting the server. They cover the home page, directory routing, both asset
-locations, private implementation files, traversal rejection, partials, and
-metadata insertion. They also cover site configuration and its English
-default, collection rendering, publication-date validation, route discovery,
-sitemap filtering, `noindex` validation, global favicon serving, and
+Open the focused `*_test.gleam` files under `test/`.
+`test/chippy_test.gleam` only starts Gleeunit. The focused files render pages
+and resolve assets without starting the server. Together they cover the home
+page, directory routing, both asset locations, private implementation files,
+traversal rejection, partials, metadata insertion, site configuration,
+collection rendering, publication-date validation, route discovery, sitemap
+filtering, `noindex`, contact outcomes, global favicon serving, and
 layout-rendered errors.
 
 Run the complete project check with:
