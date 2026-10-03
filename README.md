@@ -135,9 +135,9 @@ sitemap. Metadata stays deliberately predefined and small.
 `published` must use `YYYY-MM-DD`. It gives collection indexes a predictable
 display value and makes newest-first ordering a simple string comparison.
 
-Markdown supports CommonMark plus footnotes, stable heading IDs, tables, task
-lists, and automatic links. Raw HTML is allowed because route files are trusted
-site source rather than visitor input.
+Markdown supports CommonMark plus footnotes, stable heading IDs, and tables.
+Raw HTML is allowed because route files are trusted site source rather than
+visitor input.
 
 ## Collections
 

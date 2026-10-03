@@ -110,8 +110,7 @@ enables the authoring features that fit a content site:
 | --- | --- |
 | CommonMark and footnotes | Available by default |
 | Heading IDs | Stable fragment links for headings |
-| Tables and task lists | Useful structured content without raw HTML |
-| Automatic links | Plain web addresses become links |
+| Tables | Useful structured content without raw HTML |
 
 Emoji shortcode expansion stays off because it would silently alter ordinary
 prose. Raw HTML remains intentionally allowed because route files are trusted
@@ -229,8 +228,8 @@ page, directory routing, both asset locations, private implementation files,
 traversal rejection, partials, metadata insertion, site configuration,
 collection rendering, publication-date validation, route discovery, sitemap
 filtering, `noindex`, contact outcomes, global favicon serving, and
-layout-rendered errors. A focused Markdown test also protects heading IDs,
-tables, task lists, and automatic links; the page test protects the mobile menu.
+layout-rendered errors. A focused Markdown test also protects heading IDs and
+tables; the page test protects the mobile menu.
 
 Run the complete project check with:
 

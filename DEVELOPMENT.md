@@ -74,8 +74,7 @@ Mist request
 - `src/chippy/document.gleam` owns the page document type, frontmatter parsing,
   and metadata validation.
 - `src/chippy/markdown.gleam` owns the Mörk configuration and enables heading
-  IDs, tables, task lists, and automatic links in addition to CommonMark and
-  footnotes.
+  IDs and tables in addition to CommonMark and footnotes.
 - `src/chippy/template.gleam` composes nested layouts and partials, escapes
   inserted values, and renders document metadata.
 - `src/chippy/contact.gleam` contains the demo form's simulated outcome and
