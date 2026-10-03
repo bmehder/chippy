@@ -1,5 +1,6 @@
+import chippy/site.{type Site, absolute_url}
 import gleam/list
-import gleam/option.{None, Some}
+import gleam/option.{type Option, None, Some}
 import gleam/result
 import gleam/string
 import mork
@@ -23,7 +24,7 @@ pub type Route {
   Route(path: String, document: Document)
 }
 
-pub fn render(request_path: String) -> Result(String, PageError) {
+pub fn render(request_path: String, site: Site) -> Result(String, PageError) {
   use route_directory <- result.try(route_directory(request_path))
   use markdown <- result.try(
     simplifile.read(route_directory <> "/+page.md")
@@ -37,12 +38,19 @@ pub fn render(request_path: String) -> Result(String, PageError) {
     False -> Error(MissingContentSlot)
     True -> {
       let content = document.markdown |> mork.parse |> mork.to_html
-      render_layout(layout, document, content)
+      render_layout(
+        layout,
+        document,
+        content,
+        site,
+        Some(absolute_url(site, request_path)),
+      )
     }
   }
 }
 
 pub fn render_error(
+  site: Site,
   title: String,
   description: String,
   heading: String,
@@ -57,7 +65,7 @@ pub fn render_error(
     <> "</h1><p>"
     <> escape_html(message)
     <> "</p><a class=\"primary-button\" href=\"/\">Return home</a></section>"
-  render_layout(layout, document, content)
+  render_layout(layout, document, content, site, None)
 }
 
 pub fn discover_routes() -> Result(List(Route), PageError) {
@@ -102,17 +110,62 @@ fn render_layout(
   layout: String,
   document: Document,
   content: String,
+  site: Site,
+  canonical_url: Option(String),
 ) -> Result(String, PageError) {
-  let robots = case document.noindex {
-    True -> "<meta name=\"robots\" content=\"noindex\">"
-    False -> ""
-  }
+  let metadata = render_metadata(site, document, canonical_url)
   layout
+  |> string.replace("{{ language }}", escape_html(site.language))
+  |> string.replace("{{ site_name }}", escape_html(site.name))
   |> string.replace("{{ title }}", escape_html(document.title))
   |> string.replace("{{ description }}", escape_html(document.description))
-  |> string.replace("{{ robots }}", robots)
+  |> string.replace("{{ metadata }}", metadata)
   |> string.replace("{{ content }}", content)
   |> Ok
+}
+
+fn render_metadata(
+  site: Site,
+  document: Document,
+  canonical_url: Option(String),
+) -> String {
+  let robots = case document.noindex {
+    True -> "    <meta name=\"robots\" content=\"noindex\">\n"
+    False -> ""
+  }
+  case canonical_url {
+    None -> robots
+    Some(canonical_url) -> {
+      let canonical_url = escape_html(canonical_url)
+      let title = escape_html(document.title)
+      let description = escape_html(document.description)
+      let site_name = escape_html(site.name)
+      robots
+      <> "    <link rel=\"canonical\" href=\""
+      <> canonical_url
+      <> "\">\n"
+      <> "    <meta property=\"og:site_name\" content=\""
+      <> site_name
+      <> "\">\n"
+      <> "    <meta property=\"og:type\" content=\"website\">\n"
+      <> "    <meta property=\"og:title\" content=\""
+      <> title
+      <> "\">\n"
+      <> "    <meta property=\"og:description\" content=\""
+      <> description
+      <> "\">\n"
+      <> "    <meta property=\"og:url\" content=\""
+      <> canonical_url
+      <> "\">\n"
+      <> "    <meta name=\"twitter:card\" content=\"summary\">\n"
+      <> "    <meta name=\"twitter:title\" content=\""
+      <> title
+      <> "\">\n"
+      <> "    <meta name=\"twitter:description\" content=\""
+      <> description
+      <> "\">"
+    }
+  }
 }
 
 fn frontmatter_value(

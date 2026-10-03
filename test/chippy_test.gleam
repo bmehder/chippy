@@ -1,5 +1,6 @@
 import chippy/favicon
 import chippy/page
+import chippy/site
 import chippy/sitemap
 import gleam/list
 import gleam/string
@@ -10,8 +11,17 @@ pub fn main() -> Nil {
   gleeunit.main()
 }
 
+fn demo_site() -> site.Site {
+  site.Site(
+    name: "Chippy",
+    url: "https://chippy.example",
+    description: "A Markdown website.",
+    language: "en",
+  )
+}
+
 pub fn renders_the_home_page_test() {
-  let assert Ok(html) = page.render("/")
+  let assert Ok(html) = page.render("/", demo_site())
 
   html |> string.contains("<!doctype html>") |> should.be_true
   html
@@ -23,7 +33,16 @@ pub fn renders_the_home_page_test() {
   |> string.contains("Server-rendered Markdown in Gleam")
   |> should.be_true
   html |> string.contains("{{ content }}") |> should.be_false
-  html |> string.contains("{{ robots }}") |> should.be_false
+  html |> string.contains("{{ metadata }}") |> should.be_false
+  html |> string.contains("<html lang=\"en\">") |> should.be_true
+  html
+  |> string.contains(
+    "<link rel=\"canonical\" href=\"https://chippy.example/\">",
+  )
+  |> should.be_true
+  html
+  |> string.contains("<meta property=\"og:site_name\" content=\"Chippy\">")
+  |> should.be_true
   html
   |> string.contains("<title>Server-side rendered Markdown — Chippy</title>")
   |> should.be_true
@@ -88,6 +107,7 @@ pub fn sitemap_omits_noindex_routes_test() {
 pub fn renders_errors_with_the_site_layout_test() {
   let assert Ok(html) =
     page.render_error(
+      demo_site(),
       "Page not found",
       "There is no page at this address.",
       "Page not found",
@@ -116,10 +136,34 @@ pub fn serves_global_assets_test() {
 }
 
 pub fn maps_directories_to_routes_test() {
-  let assert Ok(html) = page.render("/about")
+  let assert Ok(html) = page.render("/about", demo_site())
 
   html |> string.contains("<h1>About Chippy</h1>") |> should.be_true
   html |> string.contains("<title>About — Chippy</title>") |> should.be_true
+}
+
+pub fn site_configuration_defaults_to_english_test() {
+  let source =
+    "name = \"Example\"\nurl = \"https://example.com/\"\ndescription = \"An example site.\""
+  let assert Ok(configuration) = site.parse(source)
+
+  configuration.language |> should.equal("en")
+  configuration.url |> should.equal("https://example.com")
+}
+
+pub fn site_configuration_can_override_language_test() {
+  let source =
+    "name = \"Example\"\nurl = \"https://example.com\"\ndescription = \"An example site.\"\nlanguage = \"nl\""
+  let assert Ok(configuration) = site.parse(source)
+
+  configuration.language |> should.equal("nl")
+}
+
+pub fn site_configuration_requires_an_absolute_url_test() {
+  let source =
+    "name = \"Example\"\nurl = \"example.com\"\ndescription = \"An example site.\""
+
+  site.parse(source) |> should.equal(Error(site.InvalidUrl))
 }
 
 pub fn keeps_chippy_files_private_test() {

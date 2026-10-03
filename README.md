@@ -19,6 +19,21 @@ Then open <http://localhost:8000>.
 Edit `routes/+page.md`, save it, and refresh the browser to see the change. The
 repository is Chippy's demo site as well as its implementation.
 
+## Site configuration
+
+`site.toml` defines the small amount of metadata shared by the whole site:
+
+```toml
+name = "Chippy"
+url = "http://localhost:8000"
+description = "A server-side rendered dynamic website with Markdown files instead of a database."
+```
+
+`name`, `url`, and `description` are required. `language` is optional and
+defaults to `"en"`; set it only when the site uses another language. Change
+`url` to the public production origin before deploying. Chippy loads and
+validates this file when the server starts.
+
 ## Routes
 
 The root page currently demonstrates the route convention:
@@ -61,9 +76,11 @@ noindex: false
 ---
 ```
 
-The layout receives `{{ title }}`, `{{ description }}`, `{{ robots }}`, and
-`{{ content }}`. Set `noindex: true` to add a robots directive and omit the page
-from the sitemap. Metadata stays deliberately predefined and small.
+The root layout receives `{{ language }}`, `{{ site_name }}`, `{{ title }}`,
+`{{ description }}`, `{{ metadata }}`, and `{{ content }}`. Chippy fills the
+metadata slot with canonical, Open Graph, and Twitter tags, plus a robots
+directive when `noindex: true`. Noindexed pages are also omitted from the
+sitemap. Metadata stays deliberately predefined and small.
 
 ## Assets and Tailwind
 
@@ -81,7 +98,7 @@ npm run watch:css
 ## Built-in routes
 
 - `/sitemap.xml` discovers valid `+page.md` files at request time. It uses the
-  request host and forwarded protocol/host headers to produce absolute URLs.
+  public `url` in `site.toml` to produce stable absolute URLs.
 - `/favicon.svg` serves `assets/favicon.svg` when the site provides one. If it
   does not, Chippy returns its built-in SVG favicon.
 

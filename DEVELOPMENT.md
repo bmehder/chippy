@@ -49,6 +49,7 @@ The request path is intentionally short:
 ```text
 Mist request
   → chippy/server.gleam
+  → site.toml
   → chippy/page.gleam
   → routes/<path>/+page.md
   → Mörk
@@ -59,7 +60,9 @@ Mist request
 - `src/chippy/page.gleam` owns safe path resolution, metadata, Markdown,
   layouts, partials, route discovery, errors, and static-file resolution.
 - `src/chippy/server.gleam` owns HTTP methods, statuses, headers, content types,
-  built-in routes, request-origin detection, and Mist response bodies.
+  built-in routes, site configuration loading, and Mist response bodies.
+- `src/chippy/site.gleam` parses and validates `site.toml`, supplies the default
+  language, and builds absolute URLs.
 - `src/chippy/sitemap.gleam` turns discovered indexable routes into XML.
 - `src/chippy/favicon.gleam` contains the fallback used when a site does not
   provide `assets/favicon.svg`.
@@ -87,6 +90,10 @@ Every `+page.md` requires non-empty `title` and `description` strings. The
 optional `noindex` field accepts only `true` or `false`; an omitted value means
 `false`. Invalid metadata fails rendering explicitly and also prevents Chippy
 from publishing an incomplete sitemap.
+
+Every site requires `name`, `url`, and `description` strings in `site.toml`.
+The optional `language` string defaults to `en`. The configured URL is the
+canonical public origin used in page metadata and the sitemap.
 
 Keep this contract, README.md, and the Inside Chippy article synchronized when
 adding metadata or built-in routes.
