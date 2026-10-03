@@ -156,6 +156,7 @@ pub fn renders_the_contact_form_without_feedback_test() {
   html |> string.contains("action=\"/contact\"") |> should.be_true
   html |> string.contains("method=\"post\"") |> should.be_true
   html |> string.contains("{{ contact_feedback }}") |> should.be_false
+  html |> string.contains("contact-feedback -->") |> should.be_false
   html |> string.contains("form-feedback") |> should.be_false
 }
 

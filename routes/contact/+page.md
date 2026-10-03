@@ -12,7 +12,7 @@ This form is a demonstration, not a way to reach anyone. Each submission
 randomly succeeds or fails. Even a successful result sends no email and stores
 nothing.
 
-{{ contact_feedback }}
+<!-- contact-feedback -->
 
 <form class="contact-form" action="/contact" method="post">
   <div class="form-field">

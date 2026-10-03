@@ -76,7 +76,7 @@ fn render_page(
         request_path,
       ))
       let markdown =
-        string.replace(markdown, "{{ contact_feedback }}", contact_feedback)
+        string.replace(markdown, "<!-- contact-feedback -->", contact_feedback)
       let content = markdown |> mork.parse |> mork.to_html
       render_layout(
         layout,
