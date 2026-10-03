@@ -17,9 +17,9 @@ published: 2026-10-03
   </div>
 </section>
 
-<figure class="page-image page-image-wide">
+<!-- <figure class="page-image page-image-wide">
   <img src="/home.webp" alt="A web request flowing through route folders and Markdown into a finished browser page" width="1280" height="854" decoding="async" fetchpriority="high">
-</figure>
+</figure> -->
 
 <section class="principles">
   <p class="eyebrow">The model</p>
