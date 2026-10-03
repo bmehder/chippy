@@ -65,7 +65,8 @@ Mist request
 ```
 
 - `src/chippy/page.gleam` owns safe path resolution, metadata, Markdown,
-  layouts, partials, route discovery, errors, and static-file resolution.
+  nested layout composition, partials, route discovery, errors, and static-file
+  resolution.
 - `src/chippy/server.gleam` owns HTTP methods, statuses, headers, content types,
   built-in routes, site configuration loading, and Mist response bodies.
 - `src/chippy/server_config.gleam` validates the optional `PORT` environment
@@ -87,7 +88,8 @@ The project website is also the primary fixture:
 - `/` demonstrates mixed Markdown and HTML.
 - `/about` demonstrates directory routing and a colocated file.
 - `/posts/inside-chippy` documents the implementation using the implementation.
-- `/posts` demonstrates a request-time collection of immediate child routes.
+- `/posts` demonstrates a request-time collection and, with its children, a
+  composed route layout.
 - `/sitemap.xml` demonstrates filesystem-derived infrastructure output.
 - `/favicon.svg` demonstrates the built-in asset fallback.
 

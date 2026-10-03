@@ -68,6 +68,8 @@
   .collection-entry h2 { @apply mt-3 text-2xl font-bold tracking-[-.025em]; }
   .collection-entry h2 a { @apply text-text no-underline hover:text-accent; }
   .collection-entry p { @apply mt-3 leading-7 text-muted; }
+  .posts-layout { @apply relative; }
+  .posts-label { @apply mb-10 inline-flex rounded-full border border-text/10 bg-surface px-4 py-2 font-mono text-xs font-bold tracking-[.1em] text-accent uppercase no-underline hover:border-accent/30; }
   .error-page { @apply flex min-h-[55vh] max-w-3xl flex-col items-start justify-center; }
   .error-page h1 { @apply max-w-2xl text-5xl leading-[.95] font-bold tracking-[-.05em] text-balance sm:text-7xl; }
   .error-page > p:not(.eyebrow) { @apply mt-6 max-w-xl text-lg leading-8 text-muted; }

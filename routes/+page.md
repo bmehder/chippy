@@ -35,6 +35,7 @@ routes/
 ├── about/+page.md           → /about
 └── posts/
     ├── +page.md             → /posts
+    ├── +layout.html         → wraps every /posts route
     └── inside-chippy/
         ├── +page.md         → /posts/inside-chippy
         └── request-flow.txt → /posts/inside-chippy/request-flow.txt

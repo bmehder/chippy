@@ -158,6 +158,18 @@ pub fn renders_a_collection_from_child_routes_test() {
   html |> string.contains("{{ collection }}") |> should.be_false
 }
 
+pub fn composes_nested_route_layouts_test() {
+  let assert Ok(index) = page.render("/posts", demo_site())
+  let assert Ok(article) = page.render("/posts/inside-chippy", demo_site())
+  let assert Ok(about) = page.render("/about", demo_site())
+
+  index |> string.contains("class=\"posts-layout\"") |> should.be_true
+  index |> string.contains("{{ content }}") |> should.be_false
+  article |> string.contains("class=\"posts-layout\"") |> should.be_true
+  article |> string.contains("<!doctype html>") |> should.be_true
+  about |> string.contains("class=\"posts-layout\"") |> should.be_false
+}
+
 pub fn requires_published_metadata_test() {
   let source = "---\ntitle: Missing date\ndescription: No date\n---\n"
 

@@ -374,15 +374,42 @@ fn is_private_path(relative: String) -> Bool {
 }
 
 fn read_layout(route_directory: String) -> Result(String, PageError) {
-  let local_layout = route_directory <> "/+layout.html"
-  case simplifile.is_file(local_layout) {
-    Ok(True) ->
-      simplifile.read(local_layout)
-      |> result.map_error(fn(_) { CannotReadLayout })
-    _ ->
-      simplifile.read("routes/+layout.html")
-      |> result.map_error(fn(_) { CannotReadLayout })
-  }
+  use root_layout <- result.try(
+    simplifile.read("routes/+layout.html")
+    |> result.map_error(fn(_) { CannotReadLayout }),
+  )
+  route_directory
+  |> layout_directories
+  |> list.drop(1)
+  |> list.try_fold(root_layout, fn(rendered, directory) {
+    let filename = directory <> "/+layout.html"
+    case simplifile.is_file(filename) {
+      Ok(False) -> Ok(rendered)
+      Ok(True) -> {
+        use nested <- result.try(
+          simplifile.read(filename)
+          |> result.map_error(fn(_) { CannotReadLayout }),
+        )
+        Ok(string.replace(rendered, "{{ content }}", nested))
+      }
+      Error(_) -> Error(CannotReadLayout)
+    }
+  })
+}
+
+fn layout_directories(route_directory: String) -> List(String) {
+  let #(_, directories) =
+    route_directory
+    |> string.split("/")
+    |> list.fold(#("", []), fn(state, segment) {
+      let #(parent, found) = state
+      let directory = case parent {
+        "" -> segment
+        _ -> parent <> "/" <> segment
+      }
+      #(directory, list.append(found, [directory]))
+    })
+  directories
 }
 
 fn insert_partials(layout: String) -> Result(String, PageError) {

@@ -100,8 +100,21 @@ guide can use ordinary Markdown while the homepage uses richer HTML sections.
 
 ## 7. Apply a layout and partials
 
-Chippy looks for a `+layout.html` in the route directory and otherwise uses the
-root layout. It replaces a small set of predefined insertion points:
+Chippy collects `+layout.html` files from the root down to the requested route.
+The root layout owns the doctype, document head, header, and footer. Nested
+layouts are ordinary HTML fragments that wrap the next `{{ content }}` slot.
+
+For this page, composition follows the filesystem:
+
+```text
+routes/+layout.html
+  → routes/posts/+layout.html
+    → routes/posts/inside-chippy/+page.md
+```
+
+A directory without a layout inherits the layouts above it. Every layout must
+leave a `{{ content }}` insertion point for the next layout or page. After
+composition, Chippy replaces the predefined document insertion points:
 
 ```text
 {{ language }}

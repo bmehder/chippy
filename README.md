@@ -57,6 +57,7 @@ routes/
 │   └── notes.txt
 ├── posts/
 │   ├── +page.md
+│   ├── +layout.html
 │   └── inside-chippy/
 │       ├── +page.md
 │       └── request-flow.txt
@@ -67,14 +68,17 @@ routes/
 
 - `+page.md` contains frontmatter followed by the route's Markdown.
 - `+layout.html` is ordinary HTML with a `{{ content }}` insertion point.
+  The root file owns the complete document; nested files are HTML fragments.
 - `{{ partial:name }}` inserts `routes/_partials/name.html`.
 - Ordinary files inside a route folder are served at the corresponding URL.
   For example, `routes/about/notes.txt` is available at `/about/notes.txt`.
 - Files beginning with `+` or `_` are implementation files and are never
   served as static assets.
 
-The included `routes/about/+page.md` maps naturally to `/about`. Nested routes
-currently fall back to the root layout and root partials.
+The included `routes/about/+page.md` maps naturally to `/about`. Layouts compose
+from the root down to the requested route, so the posts layout wraps both
+`/posts` and `/posts/inside-chippy`. A directory without its own layout simply
+inherits the layouts above it. Root partials remain available throughout.
 
 ## Metadata
 
