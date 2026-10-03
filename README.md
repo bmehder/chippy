@@ -26,6 +26,16 @@ PORT=4000 gleam run
 Invalid and unavailable ports produce a short error with the next command to
 try.
 
+Chippy binds to `127.0.0.1` by default for local development. A deployed
+service normally needs to accept traffic from outside its container:
+
+```sh
+HOST=0.0.0.0 PORT=4000 gleam run
+```
+
+`HOST` accepts `localhost` or an IPv4 address. Invalid and unavailable
+addresses fail before Mist starts.
+
 Edit `routes/+page.md`, save it, and refresh the browser to see the change. The
 repository is Chippy's demo site as well as its implementation.
 
@@ -149,8 +159,8 @@ npm run check
 ```
 
 For production, build the stylesheet, set the public `url` in `site.toml`, and
-start Chippy with the platform's `PORT`. Markdown remains request-time content;
-there is no content build or generated site directory.
+start Chippy with `HOST=0.0.0.0` and the platform's `PORT`. Markdown remains
+request-time content; there is no content build or generated site directory.
 
 Further capabilities will be added only when the demo site genuinely needs
 them.

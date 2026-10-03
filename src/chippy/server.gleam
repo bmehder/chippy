@@ -13,10 +13,10 @@ import mist
 
 pub type StartError {
   InvalidSiteConfiguration(site_config.SiteError)
-  ServerStartFailed(Int)
+  ServerStartFailed(String, Int)
 }
 
-pub fn start(port: Int) -> Result(Nil, StartError) {
+pub fn start(host: String, port: Int) -> Result(Nil, StartError) {
   use site <- result.try(
     site_config.load("site.toml")
     |> result.map_error(InvalidSiteConfiguration),
@@ -25,10 +25,11 @@ pub fn start(port: Int) -> Result(Nil, StartError) {
     handle(request, site)
   }
   |> mist.new
+  |> mist.bind(host)
   |> mist.port(port)
   |> mist.start
   |> result.map(fn(_) { Nil })
-  |> result.map_error(fn(_) { ServerStartFailed(port) })
+  |> result.map_error(fn(_) { ServerStartFailed(host, port) })
 }
 
 pub fn handle(

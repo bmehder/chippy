@@ -8,28 +8,37 @@ import gleam/io
 fn halt(code: Int) -> Nil
 
 pub fn main() -> Nil {
-  case server_config.load_port() {
+  case server_config.load() {
     Error(server_config.InvalidPort(value)) ->
       stop("Invalid PORT '" <> value <> "'. Use a number from 1 to 65535.")
-    Ok(port) ->
-      case server_config.port_is_available(port) {
-        False -> port_in_use(port)
+    Error(server_config.InvalidHost(value)) ->
+      stop(
+        "Invalid HOST '"
+        <> value
+        <> "'. Use localhost or an IPv4 address such as 127.0.0.1 or 0.0.0.0.",
+      )
+    Ok(config) ->
+      case server_config.port_is_available(config.host, config.port) {
+        False -> address_in_use(config.host, config.port)
         True ->
-          case server.start(port) {
+          case server.start(config.host, config.port) {
             Ok(_) -> process.sleep_forever()
             Error(server.InvalidSiteConfiguration(_)) ->
               stop(
                 "Could not start Chippy because site.toml is missing or invalid.",
               )
-            Error(server.ServerStartFailed(port)) -> port_in_use(port)
+            Error(server.ServerStartFailed(host, port)) ->
+              address_in_use(host, port)
           }
       }
   }
 }
 
-fn port_in_use(port: Int) -> Nil {
+fn address_in_use(host: String, port: Int) -> Nil {
   stop(
-    "Could not listen on port "
+    "Could not listen on "
+    <> host
+    <> ":"
     <> int.to_string(port)
     <> ". Another process may already be using it. Try PORT="
     <> int.to_string(port + 1)

@@ -208,11 +208,13 @@ npm run check
 
 ## 14. Start at `main` last
 
-`src/chippy.gleam` asks `server_config.gleam` for the optional `PORT`
-environment value, defaulting to 8000. The configuration rejects invalid ports
-and checks availability before Mist starts, which keeps a port collision from
-becoming an Erlang supervisor dump. After a successful start, the main process
-simply sleeps while Mist handles requests.
+`src/chippy.gleam` asks `server_config.gleam` for optional `HOST` and `PORT`
+environment values, defaulting to `127.0.0.1:8000`. A deployment can bind to
+`0.0.0.0` so traffic can reach the server from outside its container. The
+configuration rejects invalid values and checks address availability before
+Mist starts, which keeps a collision from becoming an Erlang supervisor dump.
+After a successful start, the main process simply sleeps while Mist handles
+requests.
 
 This entry point stays short because routing, rendering, and response decisions
 live in the modules you have already read.
