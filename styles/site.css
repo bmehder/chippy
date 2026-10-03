@@ -24,11 +24,13 @@
 
 @layer components {
   .site-header { @apply sticky top-0 z-20 border-b border-text/10 bg-night/90 backdrop-blur-lg; }
-  .header-inner { @apply mx-auto flex h-20 max-w-6xl items-center justify-between px-6 lg:px-10; }
+  .header-inner { @apply mx-auto flex min-h-20 max-w-6xl items-center justify-between gap-4 px-4 sm:h-20 sm:px-6 lg:px-10; }
   .site-name { @apply flex items-center gap-3 font-bold no-underline; }
   .site-name span { @apply grid size-9 place-items-center rounded-xl bg-accent font-mono text-sm text-night; }
-  .site-nav { @apply flex gap-5 text-sm font-semibold; }
+  .site-name .site-word { @apply hidden h-auto w-auto bg-transparent font-sans text-text sm:block; }
+  .site-nav { @apply flex items-center gap-3 text-xs font-semibold sm:gap-5 sm:text-sm; }
   .site-nav a { @apply text-muted no-underline hover:text-text; }
+  .site-nav .github-link { @apply flex items-center; }
   .page-shell { @apply mx-auto max-w-6xl px-6 py-14 sm:py-20 lg:px-10; }
   .prose { @apply max-w-3xl; }
   .prose > h1 { @apply text-5xl leading-[.95] font-bold tracking-[-.055em] text-balance sm:text-7xl; }
@@ -66,6 +68,17 @@
   .page-image { @apply my-10 overflow-hidden rounded-3xl border border-text/10 bg-surface shadow-2xl shadow-black/25; }
   .page-image img { @apply block h-auto w-full; }
   .page-image-wide { @apply w-[min(72rem,calc(100vw-3rem))]; }
+  .contact-form { @apply mt-10 grid gap-6 rounded-3xl border border-text/10 bg-surface p-6 shadow-2xl shadow-black/20 sm:p-8; }
+  .form-field { @apply grid gap-2; }
+  .form-field label { @apply text-sm font-bold text-text; }
+  .form-field input, .form-field textarea { @apply w-full rounded-xl border border-text/15 bg-night px-4 py-3 font-sans text-base text-text outline-none transition placeholder:text-muted focus:border-accent focus:ring-2 focus:ring-accent/20; }
+  .form-field textarea { @apply resize-y; }
+  .contact-form .primary-button { @apply justify-self-start border-0; }
+  .form-feedback { @apply mt-8 rounded-2xl border p-5 text-base leading-7; }
+  .form-feedback strong { @apply block text-text; }
+  .form-feedback p { @apply mt-1; }
+  .form-feedback-success { @apply border-accent/30 bg-accent/10 text-muted; }
+  .form-feedback-failure { @apply border-warm/40 bg-warm/10 text-muted; }
   .collection { @apply mt-12 grid gap-5; }
   .collection-entry { @apply rounded-2xl border border-text/10 bg-surface p-7; }
   .collection-entry time { @apply font-mono text-xs font-bold tracking-[.08em] text-warm; }

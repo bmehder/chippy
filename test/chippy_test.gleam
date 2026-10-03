@@ -75,6 +75,7 @@ pub fn discovers_directory_routes_test() {
 
   paths |> list.contains("/") |> should.be_true
   paths |> list.contains("/about") |> should.be_true
+  paths |> list.contains("/contact") |> should.be_true
   paths |> list.contains("/posts/gleam-or-php") |> should.be_true
   paths |> list.contains("/posts/inside-chippy") |> should.be_true
   paths |> list.contains("/posts/request-time-rendering") |> should.be_true
@@ -147,6 +148,26 @@ pub fn maps_directories_to_routes_test() {
 
   html |> string.contains("<h1>About Chippy</h1>") |> should.be_true
   html |> string.contains("<title>About — Chippy</title>") |> should.be_true
+}
+
+pub fn renders_the_contact_form_without_feedback_test() {
+  let assert Ok(html) = page.render("/contact", demo_site())
+
+  html |> string.contains("action=\"/contact\"") |> should.be_true
+  html |> string.contains("method=\"post\"") |> should.be_true
+  html |> string.contains("{{ contact_feedback }}") |> should.be_false
+  html |> string.contains("form-feedback") |> should.be_false
+}
+
+pub fn renders_both_simulated_contact_outcomes_test() {
+  let assert Ok(success) =
+    page.render_contact(demo_site(), page.ContactSucceeded)
+  let assert Ok(failure) = page.render_contact(demo_site(), page.ContactFailed)
+
+  success |> string.contains("form-feedback-success") |> should.be_true
+  success |> string.contains("did not send an email") |> should.be_true
+  failure |> string.contains("form-feedback-failure") |> should.be_true
+  failure |> string.contains("Nothing was sent") |> should.be_true
 }
 
 pub fn renders_a_collection_from_child_routes_test() {

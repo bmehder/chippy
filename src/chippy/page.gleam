@@ -31,7 +31,33 @@ pub type Route {
   Route(path: String, document: Document)
 }
 
+pub type ContactOutcome {
+  ContactSucceeded
+  ContactFailed
+}
+
 pub fn render(request_path: String, site: Site) -> Result(String, PageError) {
+  render_page(request_path, site, "")
+}
+
+pub fn render_contact(
+  site: Site,
+  outcome: ContactOutcome,
+) -> Result(String, PageError) {
+  let feedback = case outcome {
+    ContactSucceeded ->
+      "<aside class=\"form-feedback form-feedback-success\" role=\"status\"><strong>Message sent. Probably.</strong><p>This demo did not send an email, but it is pretending everything worked.</p></aside>"
+    ContactFailed ->
+      "<aside class=\"form-feedback form-feedback-failure\" role=\"alert\"><strong>That one failed on purpose.</strong><p>Nothing was sent. Try again and the imaginary mail server may be kinder.</p></aside>"
+  }
+  render_page("/contact", site, feedback)
+}
+
+fn render_page(
+  request_path: String,
+  site: Site,
+  contact_feedback: String,
+) -> Result(String, PageError) {
   use route_directory <- result.try(route_directory(request_path))
   use markdown <- result.try(
     simplifile.read(route_directory <> "/+page.md")
@@ -49,6 +75,8 @@ pub fn render(request_path: String, site: Site) -> Result(String, PageError) {
         route_directory,
         request_path,
       ))
+      let markdown =
+        string.replace(markdown, "{{ contact_feedback }}", contact_feedback)
       let content = markdown |> mork.parse |> mork.to_html
       render_layout(
         layout,

@@ -67,6 +67,8 @@ routes/
 │   ├── +page.md
 │   ├── about.webp
 │   └── notes.txt
+├── contact/
+│   └── +page.md
 ├── posts/
 │   ├── +page.md
 │   ├── +layout.html
@@ -100,6 +102,14 @@ from the root down to the requested route, so the posts layout wraps both
 `/posts` and every article beneath it. A directory without its own layout
 simply inherits the layouts above it. Root partials remain available
 throughout.
+
+## Contact demo
+
+`/contact` contains a plain HTML form inside its Markdown page. Its POST handler
+reads a size-limited body and randomly renders either success or failure
+feedback. This is intentionally theatre: it decodes nothing, stores nothing,
+and never sends an email. The small feature demonstrates that Chippy is a
+dynamic server rather than a static-site build.
 
 ## Metadata
 
@@ -166,6 +176,7 @@ partials, return the correct `404` or `500` status, and are marked `noindex`.
 - Read [DEPLOYMENT.md](DEPLOYMENT.md) for the container and Fly.io deployment.
 - Run the site and open `/posts/inside-chippy` for a request-by-request tour.
 - Open `/about` for the complete feature inventory and intentional omissions.
+- Submit `/contact` to see both simulated form outcomes.
 
 ## Check the project
 

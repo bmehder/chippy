@@ -47,6 +47,7 @@ document.
 ### HTTP and operations
 
 - Returns complete server-rendered HTML through Mist on the BEAM
+- Handles the demo contact form on the server with simulated feedback
 - Sends useful content types and `X-Content-Type-Options: nosniff` for assets
 - Rejects unsafe paths and keeps implementation files private
 - Renders styled, noindexed `404` and `500` pages with correct status codes
@@ -58,7 +59,8 @@ document.
 Chippy has no database, browser-side application runtime, content build,
 general template language, administration screen, tag system, pagination, RSS
 feed, or built-in image pipeline. The illustrations on this demo were optimized
-to WebP before being added and are served as ordinary colocated files.
+to WebP before being added and are served as ordinary colocated files. The
+contact form deliberately sends and stores nothing.
 
 Its [colocated text file](/about/notes.txt) is served directly from the same
 route folder. The illustration above is served from that folder too.

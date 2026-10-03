@@ -3,6 +3,7 @@ import chippy/page
 import chippy/site as site_config
 import chippy/sitemap
 import gleam/bytes_tree
+import gleam/crypto
 import gleam/http
 import gleam/http/request.{type Request}
 import gleam/http/response.{type Response}
@@ -38,9 +39,51 @@ pub fn handle(
 ) -> Response(mist.ResponseData) {
   case request.method {
     http.Get -> get(request, site)
+    http.Post -> post(request, site)
+    _ ->
+      text_response(405, "Method not allowed")
+      |> response.set_header("allow", "GET, POST")
+  }
+}
+
+fn post(
+  request: Request(mist.Connection),
+  site: site_config.Site,
+) -> Response(mist.ResponseData) {
+  case request.path {
+    "/contact" ->
+      case mist.read_body(request, max_body_limit: 64_000) {
+        Ok(_) -> {
+          let outcome = random_contact_outcome()
+          case page.render_contact(site, outcome) {
+            Ok(html) -> html_response(200, html)
+            Error(_) ->
+              error_response(
+                site,
+                500,
+                "Rendering failed",
+                "Chippy could not render the contact response.",
+              )
+          }
+        }
+        Error(_) ->
+          error_response(
+            site,
+            400,
+            "Invalid submission",
+            "The contact form submission could not be read.",
+          )
+      }
     _ ->
       text_response(405, "Method not allowed")
       |> response.set_header("allow", "GET")
+  }
+}
+
+fn random_contact_outcome() -> page.ContactOutcome {
+  case crypto.strong_random_bytes(1) {
+    <<byte>> if byte < 128 -> page.ContactFailed
+    _ -> page.ContactSucceeded
   }
 }
 

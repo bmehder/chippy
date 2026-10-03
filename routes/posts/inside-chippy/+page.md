@@ -147,8 +147,13 @@ The domain errors become HTTP responses at this boundary:
 
 - missing page or asset → layout-rendered `404`
 - unsafe path → `400`
-- unsupported method → `405`
+- `POST /contact` → a randomly selected simulated result page
+- unsupported method or POST route → `405`
 - rendering failure → layout-rendered `500`
+
+The contact handler reads a size-limited request body, but it neither decodes
+nor stores the fields and never contacts an email service. Its only purpose is
+to demonstrate a server-rendered form response.
 
 Successful HTML gets an explicit UTF-8 content type. Static responses receive
 a content type based on their extension and `X-Content-Type-Options: nosniff`.
@@ -231,11 +236,12 @@ live in the modules you have already read.
 2. Change the site name in `site.toml` and inspect the page title and metadata.
 3. Add another child route beneath `routes/posts/` and refresh the collection.
 4. Add `routes/contact/+page.md` with the required metadata.
-5. Add a CSS or text file beside it and request that file directly.
-6. Add a partial under `routes/_partials/` and place its marker in the layout.
-7. Set `noindex: true` and compare the collection with `/sitemap.xml`.
-8. Add `assets/favicon.svg` and confirm that it replaces the fallback.
-9. Remove a required metadata field and inspect the `500` response.
+5. Submit `/contact` until you see both of its deliberately simulated outcomes.
+6. Add a CSS or text file beside a route and request that file directly.
+7. Add a partial under `routes/_partials/` and place its marker in the layout.
+8. Set `noindex: true` and compare the collection with `/sitemap.xml`.
+9. Add `assets/favicon.svg` and confirm that it replaces the fallback.
+10. Remove a required metadata field and inspect the `500` response.
 
 If you can trace those changes from URL to filesystem to HTML, you understand
 the current Chippy architecture.

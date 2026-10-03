@@ -93,6 +93,8 @@ The project website is also the primary fixture:
 
 - `/` demonstrates mixed Markdown and HTML.
 - `/about` demonstrates directory routing and a colocated file.
+- `/contact` demonstrates a server-rendered POST response without external
+  delivery or persistence.
 - `/posts/inside-chippy` documents the implementation using the implementation.
 - `/posts/gleam-or-php` records the language tradeoffs without treating PHP as
   an inferior implementation.
