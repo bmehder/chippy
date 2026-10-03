@@ -150,6 +150,7 @@ partials, return the correct `404` or `500` status, and are marked `noindex`.
 ## Learn the codebase
 
 - Read [DEVELOPMENT.md](DEVELOPMENT.md) to set up a development environment.
+- Read [DEPLOYMENT.md](DEPLOYMENT.md) for the container and Fly.io deployment.
 - Run the site and open `/posts/inside-chippy` for a request-by-request tour.
 
 ## Check the project
