@@ -80,8 +80,6 @@ Mist request
 - `src/chippy/site.gleam` parses and validates `site.toml`, supplies the default
   language, and builds absolute URLs.
 - `src/chippy/sitemap.gleam` turns discovered indexable routes into XML.
-- `src/chippy/favicon.gleam` contains the fallback used when a site does not
-  provide `assets/favicon.svg`.
 - `src/chippy.gleam` starts the listener and contains no domain logic.
 
 Keep filesystem and HTTP failures explicit. Prefer extending the current
@@ -102,7 +100,7 @@ The project website is also the primary fixture:
 - `/posts` demonstrates a request-time collection and, with its children, a
   composed route layout.
 - `/sitemap.xml` demonstrates filesystem-derived infrastructure output.
-- `/favicon.svg` demonstrates the built-in asset fallback.
+- `/assets/favicon.svg` demonstrates a site-wide static asset.
 
 Focused tests live in `test/chippy_test.gleam`. They should not require a live
 socket.

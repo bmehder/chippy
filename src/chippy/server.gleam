@@ -1,4 +1,3 @@
-import chippy/favicon
 import chippy/page
 import chippy/site as site_config
 import chippy/sitemap
@@ -93,7 +92,6 @@ fn get(
 ) -> Response(mist.ResponseData) {
   case request.path {
     "/sitemap.xml" -> sitemap_response(site)
-    "/favicon.svg" -> favicon_response(site)
     path ->
       case page.render(path, site) {
         Ok(html) -> html_response(200, html)
@@ -129,18 +127,6 @@ fn asset_or_not_found(
         "Page not found",
         "There is no page at this address.",
       )
-  }
-}
-
-fn favicon_response(site: site_config.Site) -> Response(mist.ResponseData) {
-  case page.asset_path("/assets/favicon.svg") {
-    Ok(path) -> file_response(path, site)
-    Error(_) ->
-      response.new(200)
-      |> response.set_header("content-type", "image/svg+xml")
-      |> response.set_header("cache-control", "public, max-age=3600")
-      |> response.set_header("x-content-type-options", "nosniff")
-      |> response.set_body(mist.Bytes(bytes_tree.from_string(favicon.svg)))
   }
 }
 

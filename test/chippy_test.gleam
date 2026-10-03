@@ -1,4 +1,3 @@
-import chippy/favicon
 import chippy/page
 import chippy/server_config
 import chippy/site
@@ -126,11 +125,6 @@ pub fn renders_errors_with_the_site_layout_test() {
   html |> string.contains("class=\"error-page\"") |> should.be_true
 }
 
-pub fn provides_a_fallback_favicon_test() {
-  favicon.svg |> string.contains("<svg") |> should.be_true
-  favicon.svg |> string.contains("#a8dc7c") |> should.be_true
-}
-
 pub fn serves_colocated_assets_test() {
   page.asset_path("/about/notes.txt")
   |> should.equal(Ok("routes/about/notes.txt"))
@@ -141,6 +135,8 @@ pub fn serves_colocated_assets_test() {
 pub fn serves_global_assets_test() {
   page.asset_path("/assets/site.css")
   |> should.equal(Ok("assets/site.css"))
+  page.asset_path("/assets/favicon.svg")
+  |> should.equal(Ok("assets/favicon.svg"))
 }
 
 pub fn maps_directories_to_routes_test() {

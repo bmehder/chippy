@@ -42,7 +42,7 @@ document.
 - Produces canonical, Open Graph, and Twitter metadata
 - Defaults the document language to English and allows it to be configured
 - Generates `/sitemap.xml` from current indexable routes at request time
-- Serves a site favicon or a built-in SVG fallback
+- Serves a site favicon as an ordinary global asset
 
 ### HTTP and operations
 

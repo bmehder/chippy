@@ -160,12 +160,14 @@ separate from content rendering: changing Markdown never requires a build.
 npm run watch:css
 ```
 
-## Built-in routes
+## Infrastructure route
 
 - `/sitemap.xml` discovers valid `+page.md` files at request time. It uses the
   public `url` in `site.toml` to produce stable absolute URLs.
-- `/favicon.svg` serves `assets/favicon.svg` when the site provides one. If it
-  does not, Chippy returns its built-in SVG favicon.
+
+The root layout links directly to `/assets/favicon.svg`. Replace that ordinary
+asset when a site needs its own icon; there is no special favicon route or
+fallback behavior.
 
 Missing pages and unexpected rendering failures use the site's root layout and
 partials, return the correct `404` or `500` status, and are marked `noindex`.

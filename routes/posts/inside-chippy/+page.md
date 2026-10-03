@@ -185,14 +185,12 @@ and canonical metadata always agree.
 Open `/sitemap.xml` while the site is running. Add a valid route directory,
 refresh, and the new URL appears immediately.
 
-## 11. Resolve the favicon
+## 11. Serve the favicon
 
-The root layout points browsers to `/favicon.svg`. The server first checks for
-`assets/favicon.svg`, allowing each site to own its icon. If that file is
-absent, `src/chippy/favicon.gleam` supplies Chippy's small built-in SVG.
-
-This is a fallback, not an icon pipeline. Chippy does not resize or transform
-site assets.
+The root layout points browsers directly to `/assets/favicon.svg`. It is an
+ordinary global asset handled by the same path and content-type rules as other
+static files. Replace that file when a site needs a different icon. Chippy does
+not resize or transform it.
 
 ## 12. Render failures as pages
 
@@ -208,7 +206,7 @@ starting the server. They cover the home page, directory routing, both asset
 locations, private implementation files, traversal rejection, partials, and
 metadata insertion. They also cover site configuration and its English
 default, collection rendering, publication-date validation, route discovery,
-sitemap filtering, `noindex` validation, fallback favicon output, and
+sitemap filtering, `noindex` validation, global favicon serving, and
 layout-rendered errors.
 
 Run the complete project check with:
@@ -240,7 +238,7 @@ live in the modules you have already read.
 6. Add a CSS or text file beside a route and request that file directly.
 7. Add a partial under `routes/_partials/` and place its marker in the layout.
 8. Set `noindex: true` and compare the collection with `/sitemap.xml`.
-9. Add `assets/favicon.svg` and confirm that it replaces the fallback.
+9. Replace `assets/favicon.svg` and refresh the browser tab.
 10. Remove a required metadata field and inspect the `500` response.
 
 If you can trace those changes from URL to filesystem to HTML, you understand
