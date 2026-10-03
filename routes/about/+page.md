@@ -1,6 +1,7 @@
 ---
 title: About
 description: Chippy is a server-side rendered dynamic website with Markdown files instead of a database.
+published: 2026-10-03
 ---
 
 # About Chippy

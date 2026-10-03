@@ -1,4 +1,5 @@
 import chippy/site.{type Site, absolute_url}
+import gleam/int
 import gleam/list
 import gleam/option.{type Option, None, Some}
 import gleam/result
@@ -17,7 +18,13 @@ pub type PageError {
 }
 
 pub type Document {
-  Document(title: String, description: String, noindex: Bool, markdown: String)
+  Document(
+    title: String,
+    description: String,
+    published: String,
+    noindex: Bool,
+    markdown: String,
+  )
 }
 
 pub type Route {
@@ -37,7 +44,12 @@ pub fn render(request_path: String, site: Site) -> Result(String, PageError) {
   case string.contains(layout, "{{ content }}") {
     False -> Error(MissingContentSlot)
     True -> {
-      let content = document.markdown |> mork.parse |> mork.to_html
+      use markdown <- result.try(insert_collection(
+        document.markdown,
+        route_directory,
+        request_path,
+      ))
+      let content = markdown |> mork.parse |> mork.to_html
       render_layout(
         layout,
         document,
@@ -58,7 +70,8 @@ pub fn render_error(
 ) -> Result(String, PageError) {
   use layout <- result.try(read_layout("routes"))
   use layout <- result.try(insert_partials(layout))
-  let document = Document(title:, description:, noindex: True, markdown: "")
+  let document =
+    Document(title:, description:, published: "", noindex: True, markdown: "")
   let content =
     "<section class=\"error-page\"><p class=\"eyebrow\">Chippy</p><h1>"
     <> escape_html(heading)
@@ -102,8 +115,95 @@ pub fn parse_document(source: String) -> Result(Document, PageError) {
   let #(frontmatter, markdown) = mork.split_frontmatter_from_input(source)
   use title <- result.try(frontmatter_value(frontmatter, "title"))
   use description <- result.try(frontmatter_value(frontmatter, "description"))
+  use published <- result.try(frontmatter_value(frontmatter, "published"))
+  use _ <- result.try(validate_published(published))
   use noindex <- result.try(frontmatter_flag(frontmatter, "noindex"))
-  Ok(Document(title:, description:, noindex:, markdown:))
+  Ok(Document(title:, description:, published:, noindex:, markdown:))
+}
+
+fn validate_published(value: String) -> Result(Nil, PageError) {
+  case string.split(value, "-") {
+    [year, month, day] ->
+      case
+        string.length(year) == 4,
+        string.length(month) == 2,
+        string.length(day) == 2,
+        int.parse(year),
+        int.parse(month),
+        int.parse(day)
+      {
+        True, True, True, Ok(_), Ok(month), Ok(day)
+          if month >= 1 && month <= 12 && day >= 1 && day <= 31
+        -> Ok(Nil)
+        _, _, _, _, _, _ -> Error(InvalidMetadata)
+      }
+    _ -> Error(InvalidMetadata)
+  }
+}
+
+fn insert_collection(
+  markdown: String,
+  directory: String,
+  route_path: String,
+) -> Result(String, PageError) {
+  case string.contains(markdown, "{{ collection }}") {
+    False -> Ok(markdown)
+    True -> {
+      use entries <- result.try(discover_collection(directory, route_path))
+      Ok(string.replace(markdown, "{{ collection }}", collection_html(entries)))
+    }
+  }
+}
+
+fn discover_collection(
+  directory: String,
+  route_path: String,
+) -> Result(List(Route), PageError) {
+  use entries <- result.try(
+    simplifile.read_directory(directory)
+    |> result.map_error(fn(_) { CannotDiscoverRoutes }),
+  )
+  use routes <- result.try(
+    list.try_fold(entries, [], fn(found, name) {
+      let child_directory = directory <> "/" <> name
+      case is_private_segment(name), simplifile.is_directory(child_directory) {
+        False, Ok(True) -> {
+          let child_path = case string.ends_with(route_path, "/") {
+            True -> route_path <> name
+            False -> route_path <> "/" <> name
+          }
+          route_at(child_directory, child_path)
+          |> result.map(fn(routes) { list.append(found, routes) })
+        }
+        _, _ -> Ok(found)
+      }
+    }),
+  )
+  routes
+  |> list.filter(fn(route) { !route.document.noindex })
+  |> list.sort(fn(first, second) {
+    string.compare(second.document.published, first.document.published)
+  })
+  |> Ok
+}
+
+fn collection_html(routes: List(Route)) -> String {
+  routes
+  |> list.map(fn(route) {
+    "<article class=\"collection-entry\"><time datetime=\""
+    <> escape_html(route.document.published)
+    <> "\">"
+    <> escape_html(route.document.published)
+    <> "</time><h2><a href=\""
+    <> escape_html(route.path)
+    <> "\">"
+    <> escape_html(route.document.title)
+    <> "</a></h2><p>"
+    <> escape_html(route.document.description)
+    <> "</p></article>"
+  })
+  |> string.join("\n")
+  |> fn(entries) { "<section class=\"collection\">" <> entries <> "</section>" }
 }
 
 fn render_layout(

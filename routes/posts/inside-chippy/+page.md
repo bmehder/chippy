@@ -1,6 +1,7 @@
 ---
 title: Inside Chippy
 description: Follow a request from a URL through a Markdown file and layout to a complete HTML response.
+published: 2026-10-03
 ---
 
 <p class="eyebrow">A guided code tour</p>
@@ -69,8 +70,9 @@ that can drift away from the content tree.
 ## 4. Read and model the document
 
 `page.render` reads `+page.md` on every request. Mörk separates the frontmatter
-from the body. Chippy recognizes two required metadata fields, `title` and
-`description`, plus the optional boolean `noindex` flag.
+from the body. Chippy recognizes three required metadata fields: `title`,
+`description`, and an ISO `published` date. It also recognizes the optional
+boolean `noindex` flag.
 
 The parser returns a `Result`. A missing page becomes `NotFound`; malformed or
 missing metadata becomes `InvalidMetadata`. These errors are values passed to
@@ -79,13 +81,24 @@ the HTTP boundary rather than exceptions hidden in the rendering code.
 `noindex: true` has two effects: the layout receives a robots meta tag and the
 route is omitted from `/sitemap.xml`.
 
-## 5. Render Markdown
+## 5. Build a collection when requested
+
+A route becomes a collection index when its Markdown contains the collection
+insertion marker. Before Markdown rendering, Chippy reads the route's immediate
+child directories and finds those containing a valid `+page.md`.
+
+Noindexed children are omitted. The remaining entries are ordered by their
+`published` dates, newest first, and rendered with a link, title, description,
+and date. `/posts` uses this behavior to list this article. It is a direct
+filesystem convention rather than a general query or taxonomy system.
+
+## 6. Render Markdown
 
 Mörk converts the body to HTML. Raw HTML is intentionally allowed because route
 files are trusted site source, not untrusted visitor input. That is why this
 guide can use ordinary Markdown while the homepage uses richer HTML sections.
 
-## 6. Apply a layout and partials
+## 7. Apply a layout and partials
 
 Chippy looks for a `+layout.html` in the route directory and otherwise uses the
 root layout. It replaces a small set of predefined insertion points:
@@ -107,7 +120,7 @@ Files under `routes/_partials/` are available through markers such as `{{
 partial:header }}`. This is intentionally not a general template language. The
 layout remains an HTML file with a few obvious holes.
 
-## 7. Reach the HTTP boundary
+## 8. Reach the HTTP boundary
 
 Open `src/chippy/server.gleam`. Mist passes each request to `handle`. A `GET`
 first attempts to render a page. If there is no page at that path, the server
@@ -123,7 +136,7 @@ The domain errors become HTTP responses at this boundary:
 Successful HTML gets an explicit UTF-8 content type. Static responses receive
 a content type based on their extension and `X-Content-Type-Options: nosniff`.
 
-## 8. Follow an asset
+## 9. Follow an asset
 
 Global files live under `assets/` and keep that URL prefix. This compiled
 stylesheet is therefore available as `/assets/site.css`.
@@ -135,7 +148,7 @@ the source file beside this guide is available as
 There is no image optimizer or generalized asset build. Tailwind compiles one
 CSS file; everything else is served as an ordinary file.
 
-## 9. Discover the sitemap
+## 10. Discover the sitemap
 
 Open `src/chippy/page.gleam` again and find `discover_routes`. It walks the
 `routes/` tree, ignores private directories, reads each `+page.md`, and returns
@@ -148,7 +161,7 @@ and canonical metadata always agree.
 Open `/sitemap.xml` while the site is running. Add a valid route directory,
 refresh, and the new URL appears immediately.
 
-## 10. Resolve the favicon
+## 11. Resolve the favicon
 
 The root layout points browsers to `/favicon.svg`. The server first checks for
 `assets/favicon.svg`, allowing each site to own its icon. If that file is
@@ -157,21 +170,22 @@ absent, `src/chippy/favicon.gleam` supplies Chippy's small built-in SVG.
 This is a fallback, not an icon pipeline. Chippy does not resize or transform
 site assets.
 
-## 11. Render failures as pages
+## 12. Render failures as pages
 
 `page.render_error` uses the root layout and partials with an error-specific
 content block. The server preserves the meaningful HTTP status while returning
 a complete HTML page. Error documents always receive `noindex`, preventing a
 404 or rendering failure from appearing in search results.
 
-## 12. Read the tests beside the code
+## 13. Read the tests beside the code
 
 Open `test/chippy_test.gleam`. The tests render pages and resolve assets without
 starting the server. They cover the home page, directory routing, both asset
 locations, private implementation files, traversal rejection, partials, and
 metadata insertion. They also cover site configuration and its English
-default, route discovery, sitemap filtering, `noindex` validation, fallback
-favicon output, and layout-rendered errors.
+default, collection rendering, publication-date validation, route discovery,
+sitemap filtering, `noindex` validation, fallback favicon output, and
+layout-rendered errors.
 
 Run the complete project check with:
 
@@ -179,7 +193,7 @@ Run the complete project check with:
 npm run check
 ```
 
-## 13. Start at `main` last
+## 14. Start at `main` last
 
 `src/chippy.gleam` starts the server on port 8000 and then lets the BEAM process
 sleep. It is short because routing, rendering, and response decisions live in
@@ -189,12 +203,13 @@ the modules you have already read.
 
 1. Edit this paragraph and refresh the page.
 2. Change the site name in `site.toml` and inspect the page title and metadata.
-3. Add `routes/contact/+page.md` with the required metadata.
-4. Add a CSS or text file beside it and request that file directly.
-5. Add a partial under `routes/_partials/` and place its marker in the layout.
-6. Set `noindex: true` and compare the page head with `/sitemap.xml`.
-7. Add `assets/favicon.svg` and confirm that it replaces the fallback.
-8. Remove a required metadata field and restart to inspect the startup error.
+3. Add another child route beneath `routes/posts/` and refresh the collection.
+4. Add `routes/contact/+page.md` with the required metadata.
+5. Add a CSS or text file beside it and request that file directly.
+6. Add a partial under `routes/_partials/` and place its marker in the layout.
+7. Set `noindex: true` and compare the collection with `/sitemap.xml`.
+8. Add `assets/favicon.svg` and confirm that it replaces the fallback.
+9. Remove a required metadata field and inspect the `500` response.
 
 If you can trace those changes from URL to filesystem to HTML, you understand
 the current Chippy architecture.

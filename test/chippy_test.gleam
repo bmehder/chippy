@@ -50,7 +50,7 @@ pub fn renders_the_home_page_test() {
 
 pub fn parses_optional_noindex_metadata_test() {
   let source =
-    "---\ntitle: Private\ndescription: Hidden from search\nnoindex: true\n---\n\nSecret"
+    "---\ntitle: Private\ndescription: Hidden from search\npublished: 2026-10-03\nnoindex: true\n---\n\nSecret"
   let assert Ok(page.Document(noindex:, ..)) = page.parse_document(source)
 
   noindex |> should.be_true
@@ -58,7 +58,7 @@ pub fn parses_optional_noindex_metadata_test() {
 
 pub fn rejects_invalid_noindex_metadata_test() {
   let source =
-    "---\ntitle: Invalid\ndescription: Invalid flag\nnoindex: sometimes\n---\n"
+    "---\ntitle: Invalid\ndescription: Invalid flag\npublished: 2026-10-03\nnoindex: sometimes\n---\n"
 
   page.parse_document(source)
   |> should.equal(Error(page.InvalidMetadata))
@@ -84,6 +84,7 @@ pub fn sitemap_omits_noindex_routes_test() {
       document: page.Document(
         title: "About",
         description: "About",
+        published: "2026-10-03",
         noindex: False,
         markdown: "",
       ),
@@ -94,6 +95,7 @@ pub fn sitemap_omits_noindex_routes_test() {
       document: page.Document(
         title: "Private",
         description: "Private",
+        published: "2026-10-03",
         noindex: True,
         markdown: "",
       ),
@@ -140,6 +142,34 @@ pub fn maps_directories_to_routes_test() {
 
   html |> string.contains("<h1>About Chippy</h1>") |> should.be_true
   html |> string.contains("<title>About — Chippy</title>") |> should.be_true
+}
+
+pub fn renders_a_collection_from_child_routes_test() {
+  let assert Ok(html) = page.render("/posts", demo_site())
+
+  html |> string.contains("class=\"collection\"") |> should.be_true
+  html
+  |> string.contains("href=\"/posts/inside-chippy\"")
+  |> should.be_true
+  html
+  |> string.contains("<time datetime=\"2026-10-03\">")
+  |> should.be_true
+  html |> string.contains("{{ collection }}") |> should.be_false
+}
+
+pub fn requires_published_metadata_test() {
+  let source = "---\ntitle: Missing date\ndescription: No date\n---\n"
+
+  page.parse_document(source)
+  |> should.equal(Error(page.InvalidMetadata))
+}
+
+pub fn rejects_invalid_published_metadata_test() {
+  let source =
+    "---\ntitle: Bad date\ndescription: Bad date\npublished: October 3\n---\n"
+
+  page.parse_document(source)
+  |> should.equal(Error(page.InvalidMetadata))
 }
 
 pub fn site_configuration_defaults_to_english_test() {

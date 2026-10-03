@@ -1,6 +1,7 @@
 ---
 title: Server-side rendered Markdown
 description: Chippy is a server-side rendered dynamic website with Markdown files instead of a database.
+published: 2026-10-03
 ---
 
 <section class="hero">
@@ -32,9 +33,11 @@ description: Chippy is a server-side rendered dynamic website with Markdown file
 routes/
 ├── +page.md                 → /
 ├── about/+page.md           → /about
-└── posts/inside-chippy/
-    ├── +page.md             → /posts/inside-chippy
-    └── request-flow.txt     → /posts/inside-chippy/request-flow.txt
+└── posts/
+    ├── +page.md             → /posts
+    └── inside-chippy/
+        ├── +page.md         → /posts/inside-chippy
+        └── request-flow.txt → /posts/inside-chippy/request-flow.txt
 ```
 
 Files beginning with `+` describe Chippy. Ordinary files are served normally,

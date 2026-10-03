@@ -45,9 +45,11 @@ routes/
 ├── about/
 │   ├── +page.md
 │   └── notes.txt
-├── posts/inside-chippy/
+├── posts/
 │   ├── +page.md
-│   └── request-flow.txt
+│   └── inside-chippy/
+│       ├── +page.md
+│       └── request-flow.txt
 └── _partials/
     ├── footer.html
     └── header.html
@@ -66,12 +68,13 @@ currently fall back to the root layout and root partials.
 
 ## Metadata
 
-Chippy recognizes two required fields and one optional flag:
+Chippy recognizes three required fields and one optional flag:
 
 ```markdown
 ---
 title: About
 description: Why this page exists.
+published: 2026-10-03
 noindex: false
 ---
 ```
@@ -81,6 +84,21 @@ The root layout receives `{{ language }}`, `{{ site_name }}`, `{{ title }}`,
 metadata slot with canonical, Open Graph, and Twitter tags, plus a robots
 directive when `noindex: true`. Noindexed pages are also omitted from the
 sitemap. Metadata stays deliberately predefined and small.
+
+`published` must use `YYYY-MM-DD`. It gives collection indexes a predictable
+display value and makes newest-first ordering a simple string comparison.
+
+## Collections
+
+A page becomes a collection index when its Markdown contains `{{ collection }}`.
+Chippy replaces that marker with the indexable pages found in its immediate
+child route folders. Each entry links to the child page and displays its title,
+description, and publication date.
+
+The included `/posts` page demonstrates the complete convention. Collection
+discovery happens on every request, just like normal page rendering, so adding
+a child route requires no content build. Chippy deliberately has no tags,
+pagination, categories, or feed format.
 
 ## Assets and Tailwind
 

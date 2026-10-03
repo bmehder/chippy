@@ -78,6 +78,7 @@ The project website is also the primary fixture:
 - `/` demonstrates mixed Markdown and HTML.
 - `/about` demonstrates directory routing and a colocated file.
 - `/posts/inside-chippy` documents the implementation using the implementation.
+- `/posts` demonstrates a request-time collection of immediate child routes.
 - `/sitemap.xml` demonstrates filesystem-derived infrastructure output.
 - `/favicon.svg` demonstrates the built-in asset fallback.
 
@@ -86,10 +87,15 @@ socket.
 
 ## Current content contract
 
-Every `+page.md` requires non-empty `title` and `description` strings. The
-optional `noindex` field accepts only `true` or `false`; an omitted value means
-`false`. Invalid metadata fails rendering explicitly and also prevents Chippy
-from publishing an incomplete sitemap.
+Every `+page.md` requires non-empty `title`, `description`, and `published`
+strings. `published` uses `YYYY-MM-DD`. The optional `noindex` field accepts
+only `true` or `false`; an omitted value means `false`. Invalid metadata fails
+rendering explicitly and also prevents Chippy from publishing an incomplete
+sitemap or collection.
+
+The collection marker discovers only immediate child route folders, excludes
+noindexed pages, and orders the remainder by `published` newest-first. Keep it
+small and filesystem-shaped; do not turn it into a generalized query system.
 
 Every site requires `name`, `url`, and `description` strings in `site.toml`.
 The optional `language` string defaults to `en`. The configured URL is the
