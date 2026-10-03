@@ -16,6 +16,16 @@ gleam run
 
 Then open <http://localhost:8000>.
 
+Port 8000 is the default. Set `PORT` when another process already uses it or
+when a hosting platform supplies a port:
+
+```sh
+PORT=4000 gleam run
+```
+
+Invalid and unavailable ports produce a short error with the next command to
+try.
+
 Edit `routes/+page.md`, save it, and refresh the browser to see the change. The
 repository is Chippy's demo site as well as its implementation.
 
@@ -134,5 +144,9 @@ partials, return the correct `404` or `500` status, and are marked `noindex`.
 npm run check
 ```
 
-Collections and other capabilities will be added only when the demo site
-genuinely needs them.
+For production, build the stylesheet, set the public `url` in `site.toml`, and
+start Chippy with the platform's `PORT`. Markdown remains request-time content;
+there is no content build or generated site directory.
+
+Further capabilities will be added only when the demo site genuinely needs
+them.

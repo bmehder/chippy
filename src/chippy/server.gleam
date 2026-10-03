@@ -13,7 +13,7 @@ import mist
 
 pub type StartError {
   InvalidSiteConfiguration(site_config.SiteError)
-  ServerStartFailed
+  ServerStartFailed(Int)
 }
 
 pub fn start(port: Int) -> Result(Nil, StartError) {
@@ -28,7 +28,7 @@ pub fn start(port: Int) -> Result(Nil, StartError) {
   |> mist.port(port)
   |> mist.start
   |> result.map(fn(_) { Nil })
-  |> result.map_error(fn(_) { ServerStartFailed })
+  |> result.map_error(fn(_) { ServerStartFailed(port) })
 }
 
 pub fn handle(

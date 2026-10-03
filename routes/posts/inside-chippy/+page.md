@@ -195,9 +195,14 @@ npm run check
 
 ## 14. Start at `main` last
 
-`src/chippy.gleam` starts the server on port 8000 and then lets the BEAM process
-sleep. It is short because routing, rendering, and response decisions live in
-the modules you have already read.
+`src/chippy.gleam` asks `server_config.gleam` for the optional `PORT`
+environment value, defaulting to 8000. The configuration rejects invalid ports
+and checks availability before Mist starts, which keeps a port collision from
+becoming an Erlang supervisor dump. After a successful start, the main process
+simply sleeps while Mist handles requests.
+
+This entry point stays short because routing, rendering, and response decisions
+live in the modules you have already read.
 
 ## Exercises
 

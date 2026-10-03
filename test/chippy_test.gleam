@@ -1,5 +1,6 @@
 import chippy/favicon
 import chippy/page
+import chippy/server_config
 import chippy/site
 import chippy/sitemap
 import gleam/list
@@ -170,6 +171,17 @@ pub fn rejects_invalid_published_metadata_test() {
 
   page.parse_document(source)
   |> should.equal(Error(page.InvalidMetadata))
+}
+
+pub fn accepts_a_valid_server_port_test() {
+  server_config.parse_port("4000") |> should.equal(Ok(4000))
+}
+
+pub fn rejects_an_invalid_server_port_test() {
+  server_config.parse_port("0")
+  |> should.equal(Error(server_config.InvalidPort("0")))
+  server_config.parse_port("not-a-port")
+  |> should.equal(Error(server_config.InvalidPort("not-a-port")))
 }
 
 pub fn site_configuration_defaults_to_english_test() {

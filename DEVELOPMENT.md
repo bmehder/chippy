@@ -22,6 +22,13 @@ gleam run
 Open <http://localhost:8000>. Markdown and HTML are read on each request, so
 content changes only need a browser refresh.
 
+The server reads `PORT` from the environment and defaults to `8000`. To use
+another port:
+
+```sh
+PORT=4000 gleam run
+```
+
 When changing classes or `styles/site.css`, run this in a second terminal:
 
 ```sh
@@ -61,6 +68,8 @@ Mist request
   layouts, partials, route discovery, errors, and static-file resolution.
 - `src/chippy/server.gleam` owns HTTP methods, statuses, headers, content types,
   built-in routes, site configuration loading, and Mist response bodies.
+- `src/chippy/server_config.gleam` validates the optional `PORT` environment
+  value and checks that the selected local port is available before Mist starts.
 - `src/chippy/site.gleam` parses and validates `site.toml`, supplies the default
   language, and builds absolute URLs.
 - `src/chippy/sitemap.gleam` turns discovered indexable routes into XML.
