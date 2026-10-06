@@ -24,6 +24,7 @@ document.
 - Maps directories to URLs, with one `+page.md` file per page
 - Renders Markdown on every request instead of generating a static site
 - Requires a title, description, and publication date in page frontmatter
+- Supports The Markdown Works content contract 1.0.0 with real YAML metadata
 - Supports an optional `noindex` flag
 - Supports footnotes, heading IDs, and tables
 - Allows trusted raw HTML inside Markdown

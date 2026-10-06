@@ -78,10 +78,12 @@ that can drift away from the content tree.
 ## 4. Read and model the document
 
 `page.render` reads `+page.md` on every request and passes the source to
-`src/chippy/document.gleam`. Mörk separates the frontmatter from the body.
-Chippy recognizes three required metadata fields: `title`, `description`, and
-an ISO `published` date. It also recognizes the optional boolean `noindex`
-flag.
+`src/chippy/document.gleam`. Mörk separates the frontmatter from the body, then
+Yamleam interprets it as a YAML mapping. Chippy recognizes the three fields
+required by The Markdown Works content contract 1.0.0: `title`, `description`,
+and an ISO `published` calendar date. Plain and quoted YAML strings produce the
+same values, while additional nested metadata remains safely independent.
+Chippy also recognizes the optional boolean `noindex` flag.
 
 The parser returns a `Result`. A missing page becomes `NotFound`; malformed or
 missing metadata becomes `InvalidMetadata`. These errors are values passed to

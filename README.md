@@ -69,6 +69,8 @@ routes/
 │   └── notes.txt
 ├── contact/
 │   └── +page.md
+├── portable/
+│   └── +page.md
 ├── posts/
 │   ├── +page.md
 │   ├── +layout.html
@@ -135,6 +137,13 @@ sitemap. Metadata stays deliberately predefined and small.
 `published` must use `YYYY-MM-DD`. It gives collection indexes a predictable
 display value and makes newest-first ordering a simple string comparison.
 
+Chippy supports version 1.0.0 of [The Markdown Works content
+contract](https://github.com/bmehder/themarkdownworks/blob/main/docs/markdown-contract.md).
+Its three required fields are read from a real YAML mapping, so plain and quoted
+strings have the same meaning. Additional scalar, list, and mapping metadata is
+allowed and ignored unless Chippy recognizes the field. The unchanged shared
+example is available at `/portable`.
+
 Markdown supports CommonMark plus footnotes, stable heading IDs, and tables.
 Raw HTML is allowed because route files are trusted site source rather than
 visitor input.
@@ -193,8 +202,8 @@ The included packages each have a narrow job:
 - Simplifile reads route, layout, partial, asset, and configuration files and
   checks filesystem entries. Chippy keeps its own traversal so private route
   directories can be pruned while they are walked.
-- Mörk parses frontmatter and renders Markdown with the useful authoring
-  extensions listed above.
+- Mörk separates frontmatter from the body and renders Markdown with the useful
+  authoring extensions listed above; Yamleam interprets the YAML mapping.
 - Mist serves HTTP responses and files and size-limits the contact request body.
 - Tom parses `site.toml`; Envoy reads host and port settings; Gleam Crypto
   supplies the contact demo's random outcome.

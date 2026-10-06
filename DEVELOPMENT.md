@@ -72,7 +72,7 @@ Mist request
 - `src/chippy/page.gleam` orchestrates page rendering and owns safe path
   resolution, collections, route discovery, and static-file resolution.
 - `src/chippy/document.gleam` owns the page document type, frontmatter parsing,
-  and metadata validation.
+  YAML interpretation, and metadata validation.
 - `src/chippy/markdown.gleam` owns the Mörk configuration and enables heading
   IDs and tables in addition to CommonMark and footnotes.
 - `src/chippy/template.gleam` composes nested layouts and partials, escapes
@@ -106,6 +106,8 @@ The project website is also the primary fixture:
 - `/posts/request-time-rendering` explains the central rendering decision.
 - `/posts` demonstrates a request-time collection and, with its children, a
   composed route layout.
+- `/portable` is the unchanged shared Markdown Works contract fixture rendered
+  through Chippy's normal request path.
 - `/sitemap.xml` demonstrates filesystem-derived infrastructure output.
 - `/assets/favicon.svg` demonstrates a site-wide static asset.
 
@@ -117,11 +119,13 @@ only their Gleeunit entry point. The tests should not require a live socket.
 
 ## Current content contract
 
-Every `+page.md` requires non-empty `title`, `description`, and `published`
-strings. `published` uses `YYYY-MM-DD`. The optional `noindex` field accepts
-only `true` or `false`; an omitted value means `false`. Invalid metadata fails
-rendering explicitly and also prevents Chippy from publishing an incomplete
-sitemap or collection.
+Chippy supports The Markdown Works content contract 1.0.0. Every `+page.md`
+requires top-level, non-empty `title`, `description`, and `published` YAML
+strings. `published` is a real calendar date using `YYYY-MM-DD`. Additional
+metadata may contain scalars, lists, and mappings without affecting those core
+fields. The optional `noindex` field accepts only `true` or `false`; an omitted
+value means `false`. Invalid metadata fails rendering explicitly and also
+prevents Chippy from publishing an incomplete sitemap or collection.
 
 The collection marker discovers only immediate child route folders, excludes
 noindexed pages, and orders the remainder by `published` newest-first. Keep it
@@ -139,6 +143,7 @@ adding metadata or built-in routes.
 Simplifile is Chippy's read-only filesystem boundary. It reads content and
 templates and identifies files and directories; route discovery remains in
 Chippy so private directory pruning stays explicit. Mörk owns Markdown parsing,
-Mist owns HTTP and file responses, Tom owns TOML parsing, Envoy owns environment
-access, and Gleam Crypto supplies randomness for the contact demonstration.
+Mist owns HTTP and file responses, Yamleam owns YAML interpretation, Tom owns
+TOML parsing, Envoy owns environment access, and Gleam Crypto supplies
+randomness for the contact demonstration.
 Prefer extending those focused boundaries over adding overlapping helpers.

@@ -48,6 +48,20 @@ pub fn discovers_directory_routes_test() {
   paths |> list.contains("/posts/gleam-or-php") |> should.be_true
   paths |> list.contains("/posts/inside-chippy") |> should.be_true
   paths |> list.contains("/posts/request-time-rendering") |> should.be_true
+  paths |> list.contains("/portable") |> should.be_true
+}
+
+pub fn renders_the_shared_portable_page_test() {
+  let assert Ok(html) = page.render("/portable", test_support.demo_site())
+  html
+  |> string.contains("<title>A portable page — Chippy</title>")
+  |> should.be_true
+  html
+  |> string.contains("Markdown works. We build around that.")
+  |> should.be_true
+  html
+  |> string.contains("This nested title is additional metadata.")
+  |> should.be_false
 }
 
 pub fn renders_errors_with_the_site_layout_test() {
