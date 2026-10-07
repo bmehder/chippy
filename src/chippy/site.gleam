@@ -4,12 +4,16 @@ import gleam/string
 import simplifile
 import tom
 
+/// The document language used when `site.toml` omits `language`.
 pub const default_language = "en"
 
+/// Site-wide identity used by layouts, metadata, and the sitemap.
+/// `url` is normalized without a trailing slash.
 pub type Site {
   Site(name: String, url: String, description: String, language: String)
 }
 
+/// A filesystem, TOML, required-field, or public-origin failure.
 pub type SiteError {
   CannotReadSite
   InvalidToml
@@ -17,6 +21,7 @@ pub type SiteError {
   InvalidUrl
 }
 
+/// Read and validate a site configuration file from `path`.
 pub fn load(path: String) -> Result(Site, SiteError) {
   use source <- result.try(
     simplifile.read(path)
@@ -25,6 +30,10 @@ pub fn load(path: String) -> Result(Site, SiteError) {
   parse(source)
 }
 
+/// Parse `site.toml` source into validated site identity.
+///
+/// `name`, `url`, and `description` are required. `language` is optional, and
+/// the public URL must include an HTTP or HTTPS scheme.
 pub fn parse(source: String) -> Result(Site, SiteError) {
   use document <- result.try(
     tom.parse(source)
@@ -47,6 +56,8 @@ pub fn parse(source: String) -> Result(Site, SiteError) {
   }
 }
 
+/// Join a root-relative or bare path to the configured public origin.
+/// This is intentionally narrower than general URI resolution.
 pub fn absolute_url(site: Site, path: String) -> String {
   site.url
   <> case string.starts_with(path, "/") {

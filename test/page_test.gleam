@@ -93,6 +93,15 @@ pub fn serves_global_assets_test() {
   |> should.equal(Ok("assets/favicon.svg"))
 }
 
+pub fn serves_generated_reference_files_test() {
+  page.asset_path("/reference/")
+  |> should.equal(Ok("reference/index.html"))
+  page.asset_path("/reference/chippy/page.html")
+  |> should.equal(Ok("reference/chippy/page.html"))
+  page.asset_path("/reference/docs_config.js")
+  |> should.equal(Ok("reference/docs_config.js"))
+}
+
 pub fn maps_directories_to_routes_test() {
   let assert Ok(html) = page.render("/about", test_support.demo_site())
   html

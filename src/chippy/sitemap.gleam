@@ -3,6 +3,8 @@ import chippy/page.{type Route, Route}
 import gleam/list
 import gleam/string
 
+/// Render indexable discovered routes as a sitemap XML document.
+/// `noindex` routes are omitted and every resulting URL is XML-escaped.
 pub fn render(base_url: String, routes: List(Route)) -> String {
   let base_url = trim_trailing_slash(base_url)
   let urls =

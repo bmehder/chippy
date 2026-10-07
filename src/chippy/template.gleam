@@ -6,12 +6,15 @@ import gleam/result
 import gleam/string
 import simplifile
 
+/// A failure while loading or composing route layouts and root partials.
 pub type TemplateError {
   CannotReadLayout
   CannotReadPartials
   MissingContentSlot
 }
 
+/// Compose the root layout with every nested layout above a route directory.
+/// Root partials follow composition; one `{{ content }}` slot must remain.
 pub fn load(route_directory: String) -> Result(String, TemplateError) {
   use root_layout <- result.try(
     simplifile.read("routes/+layout.html")
@@ -43,6 +46,10 @@ pub fn load(route_directory: String) -> Result(String, TemplateError) {
   }
 }
 
+/// Fill predefined layout slots with escaped metadata and rendered page HTML.
+///
+/// `content` is trusted renderer output and is not escaped. Canonical and
+/// social metadata is omitted when `canonical_url` is absent, as on errors.
 pub fn render(
   layout: String,
   document: Document,
@@ -60,6 +67,7 @@ pub fn render(
   |> string.replace("{{ content }}", content)
 }
 
+/// Escape text for HTML content and quoted attribute values.
 pub fn escape_html(value: String) -> String {
   value
   |> string.replace("&", "&amp;")

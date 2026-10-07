@@ -2,9 +2,12 @@
   "name": "chippy",
   "private": true,
   "scripts": {
+    "build": "npm run build:css && npm run build:reference",
     "build:css": "tailwindcss -i ./styles/site.css -o ./assets/site.css --minify",
+    "build:reference": "gleam docs build --target erlang && mkdir -p reference && cp -R build/dev/docs/chippy/. reference/ && cp assets/reference/docs_config.js reference/docs_config.js",
+    "check:reference": "test -f reference/index.html && test -f reference/docs_config.js && test -f reference/chippy/page.html",
     "watch:css": "tailwindcss -i ./styles/site.css -o ./assets/site.css --watch",
-    "check": "npm run build:css && gleam format --check src test && gleam test"
+    "check": "npm run build:css && gleam format --check src test && npm run build:reference && npm run check:reference && gleam test"
   },
   "devDependencies": {
     "@tailwindcss/cli": "^4.3.0",

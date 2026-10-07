@@ -10,7 +10,7 @@ document. Editing content does not require a database or a content build.
 
 ```sh
 npm install
-npm run build:css
+npm run build
 gleam run
 ```
 
@@ -207,6 +207,7 @@ partials, return the correct `404` or `500` status, and are marked `noindex`.
 - Run the site and open `/posts/inside-chippy` for a request-by-request tour.
 - Open `/about` for the complete feature inventory and intentional omissions.
 - Submit `/contact` to see both simulated form outcomes.
+- Browse the generated [Gleam code reference](https://chippy-gleam.fly.dev/reference/).
 
 ## Dependencies
 
@@ -223,6 +224,19 @@ The included packages each have a narrow job:
 
 Using a dependency fully means using the parts that fit Chippy's small contract,
 not wrapping every API it exposes.
+
+## Implementation reference
+
+`npm run build:reference` generates Gleam's public module documentation for the
+Erlang target and places the self-hosted result in the ignored `reference/`
+directory. While Chippy is running, it is served at `/reference/`; nested CSS,
+JavaScript, fonts, JSON search data, and the local `docs_config.js` are handled
+by the same safe static-file path as other assets.
+
+Public definitions use `///` comments to explain behavior, architecture, and
+constraints. This is implementation reference for developers working on
+Chippy, separate from the authored guides and demo articles. Chippy does not
+need to be published to Hex for the reference to work.
 
 ## Check the project
 

@@ -8,6 +8,8 @@ import gleam/result
 import gleam/string
 import simplifile
 
+/// A filesystem, path-safety, metadata, or template rendering failure.
+/// The HTTP boundary translates these values into response status codes.
 pub type PageError {
   NotFound
   UnsafePath
@@ -18,14 +20,24 @@ pub type PageError {
   MissingContentSlot
 }
 
+/// A discovered public URL and its already validated content document.
+/// Collections and sitemap generation share this representation.
 pub type Route {
   Route(path: String, document: Document)
 }
 
+/// Render a request path as a complete HTML document.
+///
+/// Paths map to `routes/<path>/+page.md`; layouts compose from the route root
+/// downward, and content is read afresh on every request.
 pub fn render(request_path: String, site: Site) -> Result(String, PageError) {
   render_with(request_path, site, [])
 }
 
+/// Render a page after applying named HTML insertions to its Markdown source.
+///
+/// An insertion named `notice` replaces `<!-- notice -->`. This narrow trusted
+/// extension point supports dynamic server responses without a template DSL.
 pub fn render_with(
   request_path: String,
   site: Site,
@@ -54,6 +66,8 @@ pub fn render_with(
   ))
 }
 
+/// Render a noindexed error document through the site's root presentation.
+/// The caller remains responsible for choosing the HTTP status code.
 pub fn render_error(
   site: Site,
   title: String,
@@ -73,6 +87,8 @@ pub fn render_error(
   Ok(template.render(layout, document, content, site, None))
 }
 
+/// Discover valid public `+page.md` routes in deterministic path order.
+/// Private directories are pruned; invalid metadata fails the entire result.
 pub fn discover_routes() -> Result(List(Route), PageError) {
   discover_directory("routes", "/")
   |> result.map(fn(routes) {
@@ -82,14 +98,26 @@ pub fn discover_routes() -> Result(List(Route), PageError) {
   })
 }
 
+/// Resolve a public asset URL to an existing file Mist may safely serve.
+///
+/// Global assets, generated reference files, and route-colocated files have
+/// distinct roots. Traversal attempts and Chippy implementation files fail.
 pub fn asset_path(request_path: String) -> Result(String, PageError) {
   use relative <- result.try(safe_relative_path(request_path))
   case relative {
     "" -> Error(NotFound)
     _ -> {
-      let path = case string.starts_with(relative, "assets/") {
-        True -> relative
-        False -> "routes/" <> relative
+      let path = case relative {
+        "reference" -> "reference/index.html"
+        _ ->
+          case string.starts_with(relative, "reference/") {
+            True -> relative
+            False ->
+              case string.starts_with(relative, "assets/") {
+                True -> relative
+                False -> "routes/" <> relative
+              }
+          }
       }
       case is_private_path(relative) {
         True -> Error(NotFound)

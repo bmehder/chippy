@@ -239,6 +239,11 @@ Run the complete project check with:
 npm run check
 ```
 
+The same check generates Gleam's public API documentation from the `///`
+comments in `src/`. Open [/reference/](/reference/) for the implementation
+reference. It is served as static HTML and nested assets, separate from the
+Markdown route tree and from this user-facing tour.
+
 ## 14. Start at `main` last
 
 `src/chippy.gleam` asks `server_config.gleam` for optional `HOST` and `PORT`

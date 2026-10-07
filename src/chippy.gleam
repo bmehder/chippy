@@ -7,6 +7,10 @@ import gleam/io
 @external(erlang, "erlang", "halt")
 fn halt(code: Int) -> Nil
 
+/// Start Chippy from the configured `HOST` and `PORT` values.
+///
+/// Startup validates the listener address and `site.toml` before entering the
+/// long-running process. Failures become short operator-facing messages.
 pub fn main() -> Nil {
   case server_config.load() {
     Error(server_config.InvalidPort(value)) ->

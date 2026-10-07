@@ -15,7 +15,7 @@ tour, run the site and open `/posts/inside-chippy`.
 ```sh
 gleam deps download
 npm install
-npm run build:css
+npm run build
 gleam run
 ```
 
@@ -48,8 +48,9 @@ files colocated with their pages.
 npm run check
 ```
 
-This rebuilds the stylesheet, checks Gleam formatting, and runs the test suite.
-Run it before committing.
+This rebuilds the stylesheet and generated Gleam reference, verifies the
+reference files, checks Gleam formatting, and runs the test suite. Run it before
+committing.
 
 GitHub Actions runs the same check and verifies an Erlang shipment on every
 push to `main` and every pull request.
@@ -110,12 +111,25 @@ The project website is also the primary fixture:
   through Chippy's normal request path.
 - `/sitemap.xml` demonstrates filesystem-derived infrastructure output.
 - `/assets/favicon.svg` demonstrates a site-wide static asset.
+- `/reference/` serves the generated public Gleam API documentation and its
+  nested assets without becoming a Markdown route.
 
 The shared header demonstrates responsive navigation with native `details` and
 `summary` elements. It needs no browser-side JavaScript.
 
 Focused tests are split by module under `test/`. `test/chippy_test.gleam` is
 only their Gleeunit entry point. The tests should not require a live socket.
+
+## Generated code reference
+
+Run `npm run build:reference` after changing public APIs or their `///`
+documentation. Gleam writes the reference for the Erlang target, then the script
+copies it to the ignored `reference/` directory and supplies the
+`docs_config.js` normally hosted by HexDocs. The production container performs
+the same generation during its build and serves the result at `/reference/`.
+
+Keep these comments focused on useful behavior, boundaries, failure semantics,
+and extension points. User workflows belong in the README and demo articles.
 
 ## Current content contract
 

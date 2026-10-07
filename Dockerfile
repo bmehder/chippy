@@ -4,13 +4,17 @@ WORKDIR /app
 COPY gleam.toml manifest.toml ./
 RUN gleam deps download
 COPY src ./src
-RUN gleam export erlang-shipment
+COPY assets/reference/docs_config.js ./assets/reference/docs_config.js
+RUN gleam docs build --target erlang \
+    && cp assets/reference/docs_config.js build/dev/docs/chippy/docs_config.js \
+    && gleam export erlang-shipment
 
 FROM erlang:29-alpine AS runtime
 
 RUN addgroup -S chippy && adduser -S chippy -G chippy
 WORKDIR /app
 COPY --from=build --chown=chippy:chippy /app/build/erlang-shipment ./
+COPY --from=build --chown=chippy:chippy /app/build/dev/docs/chippy ./reference
 COPY --chown=chippy:chippy assets ./assets
 COPY --chown=chippy:chippy routes ./routes
 COPY --chown=chippy:chippy site.toml ./site.toml

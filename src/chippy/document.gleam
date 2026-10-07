@@ -6,6 +6,8 @@ import mork
 import yamleam
 import yamleam/node.{YamlBool, YamlMap, YamlString}
 
+/// Validated author content separated into portable metadata and Markdown.
+/// The text fields implement The Markdown Works contract; `noindex` is local.
 pub type Document {
   Document(
     title: String,
@@ -16,10 +18,17 @@ pub type Document {
   )
 }
 
+/// An invalid YAML mapping, required field, date, or `noindex` value.
+/// Chippy intentionally presents these cases as one small domain error.
 pub type DocumentError {
   InvalidMetadata
 }
 
+/// Parse a complete Markdown source file into a validated document.
+///
+/// Frontmatter requires non-empty `title`, `description`, and `published`
+/// strings. Nested metadata is allowed and ignored; publication dates must be
+/// real calendar dates in `YYYY-MM-DD` form.
 pub fn parse(source: String) -> Result(Document, DocumentError) {
   let #(frontmatter, markdown) = mork.split_frontmatter_from_input(source)
   use metadata <- result.try(parse_metadata(frontmatter))

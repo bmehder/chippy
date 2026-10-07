@@ -11,11 +11,14 @@ import gleam/result
 import gleam/string
 import mist
 
+/// A failure to load site identity or start the Mist listener.
 pub type StartError {
   InvalidSiteConfiguration(site_config.SiteError)
   ServerStartFailed(String, Int)
 }
 
+/// Load `site.toml` and start Mist at an already validated address.
+/// Callers normally use `chippy.main`, which performs listener preflight.
 pub fn start(host: String, port: Int) -> Result(Nil, StartError) {
   use site <- result.try(
     site_config.load("site.toml")
@@ -32,6 +35,10 @@ pub fn start(host: String, port: Int) -> Result(Nil, StartError) {
   |> result.map_error(fn(_) { ServerStartFailed(host, port) })
 }
 
+/// Convert one Mist request into a Chippy response.
+///
+/// GET tries Markdown pages before static files. POST is limited to the demo
+/// contact route, and all other methods receive `405`.
 pub fn handle(
   request: Request(mist.Connection),
   site: site_config.Site,
@@ -187,8 +194,10 @@ fn text_response(status: Int, body: String) -> Response(mist.ResponseData) {
 
 fn content_type(path: String) -> String {
   case path |> string.split(".") |> list_last {
+    "html" -> "text/html; charset=utf-8"
     "css" -> "text/css; charset=utf-8"
     "js" -> "text/javascript; charset=utf-8"
+    "json" -> "application/json; charset=utf-8"
     "svg" -> "image/svg+xml"
     "png" -> "image/png"
     "jpg" | "jpeg" -> "image/jpeg"

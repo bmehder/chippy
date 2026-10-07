@@ -57,6 +57,7 @@ document.
 - Renders styled, noindexed `404` and `500` pages with correct status codes
 - Validates `HOST` and `PORT` before starting, with local-friendly defaults
 - Includes tests, automated checks, a production container, and Fly.io setup
+- Generates and serves a browsable [Gleam code reference](/reference/)
 
 ## What it deliberately does not do
 
