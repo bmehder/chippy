@@ -3,6 +3,7 @@ FROM ghcr.io/gleam-lang/gleam:v1.18.1-erlang-alpine AS build
 WORKDIR /app
 COPY gleam.toml manifest.toml ./
 RUN gleam deps download
+COPY README.md ./README.md
 COPY src ./src
 COPY assets/reference/docs_config.js ./assets/reference/docs_config.js
 RUN gleam docs build --target erlang \

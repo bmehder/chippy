@@ -5,7 +5,7 @@
     "build": "npm run build:css && npm run build:reference",
     "build:css": "tailwindcss -i ./styles/site.css -o ./assets/site.css --minify",
     "build:reference": "gleam docs build --target erlang && mkdir -p reference && cp -R build/dev/docs/chippy/. reference/ && cp assets/reference/docs_config.js reference/docs_config.js",
-    "check:reference": "test -f reference/index.html && test -f reference/docs_config.js && test -f reference/chippy/page.html",
+    "check:reference": "test -f reference/index.html && test -f reference/docs_config.js && test -f reference/chippy/page.html && grep -Fq 'A server-side rendered dynamic website with Markdown files instead of a database.' reference/index.html",
     "watch:css": "tailwindcss -i ./styles/site.css -o ./assets/site.css --watch",
     "check": "npm run build:css && gleam format --check src test && npm run build:reference && npm run check:reference && gleam test"
   },

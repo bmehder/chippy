@@ -4,6 +4,5 @@ build
 node_modules
 test
 Dockerfile
-README.md
 DEVELOPMENT.md
 DEPLOYMENT.md
