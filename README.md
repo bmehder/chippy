@@ -204,6 +204,7 @@ partials, return the correct `404` or `500` status, and are marked `noindex`.
 
 - Read [DEVELOPMENT.md](DEVELOPMENT.md) to set up a development environment.
 - Read [DEPLOYMENT.md](DEPLOYMENT.md) for the container and Fly.io deployment.
+- Read [CHANGELOG.md](CHANGELOG.md) for release history and versioning policy.
 - Run the site and open `/posts/inside-chippy` for a request-by-request tour.
 - Open `/about` for the complete feature inventory and intentional omissions.
 - Submit `/contact` to see both simulated form outcomes.
