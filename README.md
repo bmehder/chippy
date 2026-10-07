@@ -175,6 +175,19 @@ separate from content rendering: changing Markdown never requires a build.
 npm run watch:css
 ```
 
+## Interactive islands
+
+Chippy does not require a browser-side framework, and this demo currently has
+no JavaScript island. When a page needs a small interactive area, place its
+JavaScript beside the route or in `assets/` and load it from the layout or page.
+
+Lustre is the author's preferred way to build those islands, and the Docklands
+demo uses it. It is a choice, not a Chippy dependency: plain JavaScript or
+another suitably small library works too, and authors do not need to learn
+Lustre to build with Chippy. The [shared islands
+guide](https://themarkdownworks.vercel.app/docs/islands/) explains the options
+with a plain JavaScript example.
+
 ## Infrastructure route
 
 - `/sitemap.xml` discovers valid `+page.md` files at request time. It uses the

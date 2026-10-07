@@ -36,6 +36,7 @@ document.
 - Inserts reusable root-level HTML partials
 - Serves site-wide files from `assets/`
 - Serves ordinary files colocated inside route folders
+- Supports optional JavaScript islands without requiring a site-wide runtime
 - Compiles the included dark theme from Tailwind source CSS
 - Includes responsive desktop and mobile navigation without client JavaScript
 - Ships this repository as a working demo site
@@ -64,6 +65,13 @@ general template language, administration screen, tag system, pagination, RSS
 feed, or built-in image pipeline. The illustrations on this demo were optimized
 to WebP before being added and are served as ordinary colocated files. The
 contact form deliberately sends and stores nothing.
+
+This demo does not currently contain a JavaScript island. When an island earns
+its place, the author's preferred approach is Lustre, as demonstrated by the
+Docklands demo. Lustre is not required: plain JavaScript or another focused
+library can use the same colocated or global asset paths. [The Markdown Works
+islands guide](https://themarkdownworks.vercel.app/docs/islands/) explains the
+options with a plain JavaScript example.
 
 Its [colocated text file](/about/notes.txt) is served directly from the same
 route folder. The illustration above is served from that folder too.
