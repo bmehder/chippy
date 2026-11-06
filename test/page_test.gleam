@@ -1,4 +1,5 @@
 import chippy/page
+import chippy/route
 import gleam/list
 import gleam/string
 import gleeunit/should
@@ -36,10 +37,10 @@ pub fn renders_the_home_page_test() {
 }
 
 pub fn discovers_directory_routes_test() {
-  let assert Ok(routes) = page.discover_routes()
+  let assert Ok(routes) = route.discover_routes()
   let paths =
     list.map(routes, fn(route) {
-      let page.Route(path:, ..) = route
+      let route.Route(path:, ..) = route
       path
     })
   paths |> list.contains("/") |> should.be_true

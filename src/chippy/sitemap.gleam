@@ -1,5 +1,5 @@
 import chippy/document.{Document}
-import chippy/page.{type Route, Route}
+import chippy/route.{type Route, Route}
 import gleam/list
 import gleam/string
 

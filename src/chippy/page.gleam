@@ -1,5 +1,6 @@
 import chippy/document.{type Document, Document}
 import chippy/markdown
+import chippy/route.{type Route}
 import chippy/site.{type Site, absolute_url}
 import chippy/template
 import gleam/list
@@ -20,12 +21,6 @@ pub type PageError {
   MissingContentSlot
 }
 
-/// A discovered public URL and its already validated content document.
-/// Collections and sitemap generation share this representation.
-pub type Route {
-  Route(path: String, document: Document)
-}
-
 /// Render a request path as a complete HTML document.
 ///
 /// Paths map to `routes/<path>/+page.md`; layouts compose from the route root
@@ -43,7 +38,9 @@ pub fn render_with(
   site: Site,
   insertions: List(#(String, String)),
 ) -> Result(String, PageError) {
-  use route_directory <- result.try(route_directory(request_path))
+  use route_directory <- result.try(
+    route.route_directory(request_path) |> result.map_error(from_route_error),
+  )
   use source <- result.try(
     simplifile.read(route_directory <> "/+page.md")
     |> result.map_error(fn(_) { NotFound }),
@@ -87,23 +84,14 @@ pub fn render_error(
   Ok(template.render(layout, document, content, site, None))
 }
 
-/// Discover valid public `+page.md` routes in deterministic path order.
-/// Private directories are pruned; invalid metadata fails the entire result.
-pub fn discover_routes() -> Result(List(Route), PageError) {
-  discover_directory("routes", "/")
-  |> result.map(fn(routes) {
-    list.sort(routes, fn(first, second) {
-      string.compare(first.path, second.path)
-    })
-  })
-}
-
 /// Resolve a public asset URL to an existing file Mist may safely serve.
 ///
 /// Global assets, generated reference files, and route-colocated files have
 /// distinct roots. Traversal attempts and Chippy implementation files fail.
 pub fn asset_path(request_path: String) -> Result(String, PageError) {
-  use relative <- result.try(safe_relative_path(request_path))
+  use relative <- result.try(
+    route.safe_relative_path(request_path) |> result.map_error(from_route_error),
+  )
   case relative {
     "" -> Error(NotFound)
     _ -> {
@@ -119,7 +107,7 @@ pub fn asset_path(request_path: String) -> Result(String, PageError) {
               }
           }
       }
-      case is_private_path(relative) {
+      case route.is_private_path(relative) {
         True -> Error(NotFound)
         False ->
           case simplifile.is_file(path) {
@@ -144,42 +132,13 @@ fn insert_collection(
   case string.contains(markdown, "{{ collection }}") {
     False -> Ok(markdown)
     True -> {
-      use entries <- result.try(discover_collection(directory, route_path))
+      use entries <- result.try(
+        route.discover_collection(directory, route_path)
+        |> result.map_error(from_route_error),
+      )
       Ok(string.replace(markdown, "{{ collection }}", collection_html(entries)))
     }
   }
-}
-
-fn discover_collection(
-  directory: String,
-  route_path: String,
-) -> Result(List(Route), PageError) {
-  use entries <- result.try(
-    simplifile.read_directory(directory)
-    |> result.map_error(fn(_) { CannotDiscoverRoutes }),
-  )
-  use routes <- result.try(
-    list.try_fold(entries, [], fn(found, name) {
-      let child_directory = directory <> "/" <> name
-      case is_private_segment(name), simplifile.is_directory(child_directory) {
-        False, Ok(True) -> {
-          let child_path = case string.ends_with(route_path, "/") {
-            True -> route_path <> name
-            False -> route_path <> "/" <> name
-          }
-          route_at(child_directory, child_path)
-          |> result.map(fn(routes) { list.append(found, routes) })
-        }
-        _, _ -> Ok(found)
-      }
-    }),
-  )
-  routes
-  |> list.filter(fn(route) { !route.document.noindex })
-  |> list.sort(fn(first, second) {
-    string.compare(second.document.published, first.document.published)
-  })
-  |> Ok
 }
 
 fn collection_html(routes: List(Route)) -> String {
@@ -201,88 +160,6 @@ fn collection_html(routes: List(Route)) -> String {
   |> fn(entries) { "<section class=\"collection\">" <> entries <> "</section>" }
 }
 
-fn route_directory(request_path: String) -> Result(String, PageError) {
-  use relative <- result.try(safe_relative_path(request_path))
-  case is_private_path(relative) {
-    True -> Error(NotFound)
-    False ->
-      Ok(case relative {
-        "" -> "routes"
-        _ -> "routes/" <> relative
-      })
-  }
-}
-
-fn safe_relative_path(path: String) -> Result(String, PageError) {
-  let trimmed = string.trim(path)
-  let relative = case string.starts_with(trimmed, "/") {
-    True -> string.drop_start(trimmed, 1)
-    False -> trimmed
-  }
-  let segments = string.split(relative, "/")
-  case
-    string.contains(relative, "\\")
-    || list.any(segments, fn(segment) { segment == ".." })
-  {
-    True -> Error(UnsafePath)
-    False ->
-      case string.ends_with(relative, "/") {
-        True -> Ok(string.drop_end(relative, 1))
-        False -> Ok(relative)
-      }
-  }
-}
-
-fn is_private_path(relative: String) -> Bool {
-  relative
-  |> string.split("/")
-  |> list.any(fn(segment) {
-    string.starts_with(segment, "+") || string.starts_with(segment, "_")
-  })
-}
-
-fn discover_directory(
-  directory: String,
-  route_path: String,
-) -> Result(List(Route), PageError) {
-  use routes <- result.try(route_at(directory, route_path))
-  use entries <- result.try(
-    simplifile.read_directory(directory)
-    |> result.map_error(fn(_) { CannotDiscoverRoutes }),
-  )
-  entries
-  |> list.try_fold(routes, fn(found, name) {
-    let child_directory = directory <> "/" <> name
-    case is_private_segment(name), simplifile.is_directory(child_directory) {
-      False, Ok(True) -> {
-        let child_path = case route_path {
-          "/" -> "/" <> name
-          _ -> route_path <> "/" <> name
-        }
-        discover_directory(child_directory, child_path)
-        |> result.map(fn(children) { list.append(found, children) })
-      }
-      _, _ -> Ok(found)
-    }
-  })
-}
-
-fn route_at(directory: String, route_path: String) {
-  let filename = directory <> "/+page.md"
-  case simplifile.is_file(filename) {
-    Ok(True) -> {
-      use source <- result.try(
-        simplifile.read(filename)
-        |> result.map_error(fn(_) { CannotDiscoverRoutes }),
-      )
-      use document <- result.try(parse_document(source))
-      Ok([Route(path: route_path, document:)])
-    }
-    Ok(False) -> Ok([])
-    Error(_) -> Error(CannotDiscoverRoutes)
-  }
-}
-
 fn parse_document(source: String) -> Result(Document, PageError) {
   document.parse(source) |> result.map_error(fn(_) { InvalidMetadata })
 }
@@ -298,8 +175,11 @@ fn load_template(route_directory: String) -> Result(String, PageError) {
   })
 }
 
-fn is_private_segment(segment: String) -> Bool {
-  string.starts_with(segment, "+")
-  || string.starts_with(segment, "_")
-  || string.starts_with(segment, ".")
+fn from_route_error(error: route.RouteError) -> PageError {
+  case error {
+    route.NotFound -> NotFound
+    route.UnsafePath -> UnsafePath
+    route.InvalidMetadata -> InvalidMetadata
+    route.CannotDiscoverRoutes -> CannotDiscoverRoutes
+  }
 }

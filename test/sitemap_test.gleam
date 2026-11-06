@@ -1,12 +1,12 @@
 import chippy/document
-import chippy/page
+import chippy/route
 import chippy/sitemap
 import gleam/string
 import gleeunit/should
 
 pub fn sitemap_omits_noindex_routes_test() {
   let public =
-    page.Route(
+    route.Route(
       path: "/about",
       document: document.Document(
         title: "About",
@@ -17,7 +17,7 @@ pub fn sitemap_omits_noindex_routes_test() {
       ),
     )
   let private =
-    page.Route(
+    route.Route(
       path: "/private",
       document: document.Document(
         title: "Private",

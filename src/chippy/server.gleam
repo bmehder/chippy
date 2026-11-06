@@ -1,5 +1,6 @@
 import chippy/contact
 import chippy/page
+import chippy/route
 import chippy/site as site_config
 import chippy/sitemap
 import gleam/bytes_tree
@@ -132,7 +133,7 @@ fn asset_or_not_found(
 }
 
 fn sitemap_response(site: site_config.Site) -> Response(mist.ResponseData) {
-  case page.discover_routes() {
+  case route.discover_routes() {
     Ok(routes) -> {
       let body =
         sitemap.render(site.url, routes)
