@@ -54,7 +54,7 @@
   .prose pre { @apply mt-8 overflow-x-auto rounded-2xl border border-text/10 bg-surface p-6 text-text shadow-xl shadow-black/20; }
   .prose pre code { @apply bg-transparent p-0 text-inherit; }
   .prose > *:first-child { @apply mt-0; }
-  .hero { @apply relative w-[min(72rem,calc(100vw-3rem))] overflow-hidden rounded-[2rem] border border-text/10 bg-surface px-7 py-16 text-text shadow-2xl shadow-black/20 sm:px-12 sm:py-24 lg:px-16; }
+  .hero { @apply relative w-full overflow-hidden rounded-[2rem] border border-text/10 bg-surface px-7 py-16 text-text shadow-2xl shadow-black/20 sm:px-12 sm:py-24 lg:px-16; }
   .hero::after { content: ""; @apply pointer-events-none absolute -right-20 -bottom-32 size-96 rounded-full border-[70px] border-accent/10; }
   .eyebrow { @apply mb-6 font-mono text-xs font-bold tracking-[.16em] text-accent uppercase; }
   .hero h1 { @apply max-w-4xl text-5xl leading-[.94] font-bold tracking-[-.055em] text-balance sm:text-7xl lg:text-8xl; }
@@ -66,7 +66,7 @@
   .request-flow { @apply relative z-10 mt-16 flex flex-wrap items-center gap-3 font-mono text-xs text-muted; }
   .request-flow span { @apply rounded-lg border border-text/10 bg-text/5 px-3 py-2 text-text/80; }
   .request-flow b { @apply text-accent; }
-  .principles { @apply w-[min(72rem,calc(100vw-3rem))] py-24 sm:py-32; }
+  .principles { @apply w-full py-24 sm:py-32; }
   .principles > h2 { @apply max-w-4xl text-4xl leading-tight font-bold tracking-[-.04em] sm:text-6xl; }
   .principle-grid { @apply mt-14 grid overflow-hidden rounded-3xl border border-text/10 bg-text/10 md:grid-cols-3; gap: 1px; }
   .principle-grid article { @apply flex min-h-72 flex-col bg-surface p-7; }
@@ -77,7 +77,7 @@
   .callout strong { @apply block text-text; }
   .page-image { @apply my-10 overflow-hidden rounded-3xl border border-text/10 bg-surface shadow-2xl shadow-black/25; }
   .page-image img { @apply block h-auto w-full; }
-  .page-image-wide { @apply w-[min(72rem,calc(100vw-3rem))]; }
+  .page-image-wide { @apply w-full; }
   .contact-form { @apply mt-10 grid gap-6 rounded-3xl border border-text/10 bg-surface p-6 shadow-2xl shadow-black/20 sm:p-8; }
   .form-field { @apply grid gap-2; }
   .form-field label { @apply text-sm font-bold text-text; }
