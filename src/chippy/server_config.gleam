@@ -22,7 +22,8 @@ pub type ConfigError {
   InvalidHost(String)
 }
 
-/// Read listener configuration with local-safe defaults.
+/// Read `HOST` and `PORT` from the environment.
+/// Missing values use local development defaults. Invalid values return errors.
 pub fn load() -> Result(Config, ConfigError) {
   from_values(
     host: envoy.get("HOST") |> result.unwrap(default_host),
@@ -46,22 +47,21 @@ pub fn parse_port(value: String) -> Result(Int, ConfigError) {
   }
 }
 
-/// Check whether the requested address can be bound before Mist starts.
+/// The result of a temporary TCP bind before Mist starts.
 pub type PortProbe {
   Available
+  /// The OS returned `eaddrinuse`, so the requested address is occupied.
   AddressInUse
+  /// The bind failed for another reason. Carries the OS error name.
   BindFailed(String)
 }
 
-/// Availability can still change between this Erlang preflight and real bind.
+/// Try to bind a temporary listener and close it immediately on success.
+/// This check does not reserve the address for Mist's later bind.
 @external(erlang, "chippy_ffi", "probe_port")
 pub fn probe_port(host: String, port: Int) -> PortProbe
 
-/// Check whether the temporary listener can bind to this address.
-pub fn port_is_available(host: String, port: Int) -> Bool {
-  probe_port(host, port) == Available
-}
-
+/// Accept localhost or a dotted IPv4 address after trimming whitespace.
 fn parse_host(value: String) -> Result(String, ConfigError) {
   let value = string.trim(value)
   case value {
