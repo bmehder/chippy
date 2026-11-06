@@ -39,7 +39,6 @@
   .mobile-nav { @apply absolute top-[calc(100%+0.75rem)] right-0 grid min-w-52 overflow-hidden rounded-2xl border border-text/15 bg-surface p-2 text-sm font-semibold shadow-2xl shadow-black/40; }
   .mobile-nav a { @apply flex items-center justify-between rounded-xl px-4 py-3 text-muted no-underline hover:bg-text/5 hover:text-text; }
   .page-shell { @apply mx-auto max-w-6xl px-6 py-14 sm:py-20 lg:px-10; }
-  .page-shell:has(> .hero) { @apply pt-0; }
   .prose { @apply max-w-3xl; }
   .prose > h1 { @apply text-5xl leading-[.95] font-bold tracking-[-.055em] text-balance sm:text-7xl; }
   .prose > h2 { @apply mt-16 text-3xl font-bold tracking-[-.03em] text-balance sm:text-4xl; }
@@ -55,7 +54,7 @@
   .prose pre { @apply mt-8 overflow-x-auto rounded-2xl border border-text/10 bg-surface p-6 text-text shadow-xl shadow-black/20; }
   .prose pre code { @apply bg-transparent p-0 text-inherit; }
   .prose > *:first-child { @apply mt-0; }
-  .hero { @apply relative w-[min(72rem,calc(100vw-3rem))] overflow-hidden rounded-[2rem] border border-text/10 bg-surface px-7 py-16 text-text shadow-2xl shadow-black/20 sm:px-12 sm:py-24 lg:px-16; }
+  .hero { @apply relative w-full overflow-hidden rounded-[2rem] border border-text/10 bg-surface px-7 py-16 text-text shadow-2xl shadow-black/20 sm:px-12 sm:py-24 lg:px-16; }
   .hero::after { content: ""; @apply pointer-events-none absolute -right-20 -bottom-32 size-96 rounded-full border-[70px] border-accent/10; }
   .eyebrow { @apply mb-6 font-mono text-xs font-bold tracking-[.16em] text-accent uppercase; }
   .hero h1 { @apply max-w-4xl text-5xl leading-[.94] font-bold tracking-[-.055em] text-balance sm:text-7xl lg:text-8xl; }
