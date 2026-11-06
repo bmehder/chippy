@@ -96,7 +96,7 @@ fn get(
     path ->
       case page.render(path, site) {
         Ok(html) -> html_response(200, html)
-        Error(page.NotFound) -> asset_or_not_found(path, site)
+        Error(page.NotFound) -> serve_asset(path, site)
         Error(page.UnsafePath) ->
           error_response(
             site:,
@@ -115,7 +115,7 @@ fn get(
   }
 }
 
-fn asset_or_not_found(
+fn serve_asset(
   path: String,
   site: site_config.Site,
 ) -> Response(mist.ResponseData) {
