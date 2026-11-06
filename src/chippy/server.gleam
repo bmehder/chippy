@@ -6,6 +6,7 @@ import gleam/bytes_tree
 import gleam/http
 import gleam/http/request.{type Request}
 import gleam/http/response.{type Response}
+import gleam/list
 import gleam/option.{None}
 import gleam/result
 import gleam/string
@@ -197,7 +198,7 @@ fn text_response(status: Int, body: String) -> Response(mist.ResponseData) {
 }
 
 fn content_type(path: String) -> String {
-  case path |> string.split(".") |> list_last {
+  case file_extension(path) {
     "html" -> "text/html; charset=utf-8"
     "css" -> "text/css; charset=utf-8"
     "js" -> "text/javascript; charset=utf-8"
@@ -215,10 +216,15 @@ fn content_type(path: String) -> String {
   }
 }
 
-fn list_last(items: List(String)) -> String {
-  case items {
-    [] -> ""
-    [item] -> string.lowercase(item)
-    [_, ..rest] -> list_last(rest)
+fn file_extension(path: String) -> String {
+  let filename = path |> string.split("/") |> list.last |> result.unwrap("")
+  case string.split(filename, ".") {
+    ["", _] -> ""
+    [_, extension, ..rest] ->
+      [extension, ..rest]
+      |> list.last
+      |> result.unwrap("")
+      |> string.lowercase
+    _ -> ""
   }
 }
