@@ -14,9 +14,11 @@ fn halt(code: Int) -> Nil
 pub fn main() -> Nil {
   case server_config.load() {
     Error(server_config.InvalidPort(value)) ->
-      stop("Invalid PORT '" <> value <> "'. Use a number from 1 to 65535.")
+      fail_startup(
+        "Invalid PORT '" <> value <> "'. Use a number from 1 to 65535.",
+      )
     Error(server_config.InvalidHost(value)) ->
-      stop(
+      fail_startup(
         "Invalid HOST '"
         <> value
         <> "'. Use localhost or an IPv4 address such as 127.0.0.1 or 0.0.0.0.",
@@ -25,7 +27,7 @@ pub fn main() -> Nil {
       case server_config.probe_port(config.host, config.port) {
         server_config.AddressInUse -> address_in_use(config.host, config.port)
         server_config.BindFailed(reason) ->
-          stop(
+          fail_startup(
             "Could not listen on "
             <> config.host
             <> ":"
@@ -38,11 +40,11 @@ pub fn main() -> Nil {
           case server.start(config.host, config.port) {
             Ok(_) -> process.sleep_forever()
             Error(server.InvalidSiteConfiguration(_)) ->
-              stop(
+              fail_startup(
                 "Could not start Chippy because site.toml is missing or invalid.",
               )
             Error(server.ServerStartFailed(host, port)) ->
-              stop(
+              fail_startup(
                 "Could not start Chippy on "
                 <> host
                 <> ":"
@@ -55,7 +57,7 @@ pub fn main() -> Nil {
 }
 
 fn address_in_use(host: String, port: Int) -> Nil {
-  stop(
+  fail_startup(
     "Could not listen on "
     <> host
     <> ":"
@@ -66,7 +68,7 @@ fn address_in_use(host: String, port: Int) -> Nil {
   )
 }
 
-fn stop(message: String) -> Nil {
+fn fail_startup(message: String) -> Nil {
   io.println_error("Chippy: " <> message)
   halt(1)
 }
