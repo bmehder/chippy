@@ -65,19 +65,19 @@ fn post(
             Ok(html) -> html_response(200, html)
             Error(_) ->
               error_response(
-                site,
-                500,
-                "Rendering failed",
-                "Chippy could not render the contact response.",
+                site:,
+                status: 500,
+                heading: "Rendering failed",
+                message: "Chippy could not render the contact response.",
               )
           }
         }
         Error(_) ->
           error_response(
-            site,
-            400,
-            "Invalid submission",
-            "The contact form submission could not be read.",
+            site:,
+            status: 400,
+            heading: "Invalid submission",
+            message: "The contact form submission could not be read.",
           )
       }
     _ ->
@@ -98,17 +98,17 @@ fn get(
         Error(page.NotFound) -> asset_or_not_found(path, site)
         Error(page.UnsafePath) ->
           error_response(
-            site,
-            400,
-            "Bad request",
-            "The requested path is not valid.",
+            site:,
+            status: 400,
+            heading: "Bad request",
+            message: "The requested path is not valid.",
           )
         Error(_) ->
           error_response(
-            site,
-            500,
-            "Rendering failed",
-            "Chippy could not render this page.",
+            site:,
+            status: 500,
+            heading: "Rendering failed",
+            message: "Chippy could not render this page.",
           )
       }
   }
@@ -122,10 +122,10 @@ fn asset_or_not_found(
     Ok(path) -> file_response(path, site)
     Error(_) ->
       error_response(
-        site,
-        404,
-        "Page not found",
-        "There is no page at this address.",
+        site:,
+        status: 404,
+        heading: "Page not found",
+        message: "There is no page at this address.",
       )
   }
 }
@@ -140,10 +140,10 @@ fn sitemap_response(site: site_config.Site) -> Response(mist.ResponseData) {
       )
     Error(_) ->
       error_response(
-        site,
-        500,
-        "Sitemap unavailable",
-        "Chippy could not discover the site's routes.",
+        site:,
+        status: 500,
+        heading: "Sitemap unavailable",
+        message: "Chippy could not discover the site's routes.",
       )
   }
 }
@@ -160,19 +160,19 @@ fn file_response(
       |> response.set_body(body)
     Error(_) ->
       error_response(
-        site,
-        404,
-        "File not found",
-        "The requested file is unavailable.",
+        site:,
+        status: 404,
+        heading: "File not found",
+        message: "The requested file is unavailable.",
       )
   }
 }
 
 fn error_response(
-  site: site_config.Site,
-  status: Int,
-  heading: String,
-  message: String,
+  site site: site_config.Site,
+  status status: Int,
+  heading heading: String,
+  message message: String,
 ) -> Response(mist.ResponseData) {
   case page.render_error(site, heading, message, heading, message) {
     Ok(html) -> html_response(status, html)
