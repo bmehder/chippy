@@ -73,9 +73,9 @@
   .principles { @apply w-[min(72rem,calc(100vw-3rem))] py-24 sm:py-32; }
   .principles > h2 { @apply max-w-4xl text-4xl leading-tight font-bold tracking-[-.04em] sm:text-6xl; }
   .principle-grid { @apply mt-14 grid overflow-hidden rounded-3xl border border-text/10 bg-text/10 md:grid-cols-3; gap: 1px; }
-  .principle-grid article { @apply flex min-h-72 flex-col bg-surface p-7; }
+  .principle-grid article { @apply flex flex-col bg-surface p-7; }
   .principle-grid span { @apply font-mono text-xs font-bold text-warm; }
-  .principle-grid h3 { @apply mt-auto text-xl font-bold; }
+  .principle-grid h3 { @apply mt-6 text-xl font-bold; }
   .principle-grid p { @apply mt-4 text-sm leading-6 text-muted; }
   .callout { @apply mt-12 rounded-2xl border border-accent/20 bg-accent/5 p-6 text-base leading-7 text-muted; }
   .callout strong { @apply block text-text; }
