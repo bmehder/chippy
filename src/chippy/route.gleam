@@ -33,26 +33,12 @@ pub fn discover_collection(
   directory: String,
   route_path: String,
 ) -> Result(List(Route), RouteError) {
-  use entries <- result.try(
-    simplifile.read_directory(directory)
-    |> result.map_error(fn(_) { CannotDiscoverRoutes }),
-  )
-  use routes <- result.try(
-    list.try_fold(entries, [], fn(found, name) {
-      let child_directory = directory <> "/" <> name
-      case is_private_segment(name), simplifile.is_directory(child_directory) {
-        False, Ok(True) -> {
-          let child_path = case string.ends_with(route_path, "/") {
-            True -> route_path <> name
-            False -> route_path <> "/" <> name
-          }
-          route_at(child_directory, child_path)
-          |> result.map(fn(routes) { list.append(found, routes) })
-        }
-        _, _ -> Ok(found)
-      }
-    }),
-  )
+  use routes <- result.try(discover_children(
+    directory,
+    route_path,
+    [],
+    route_at,
+  ))
   routes
   |> list.filter(fn(route) { !route.document.noindex })
   |> list.sort(fn(first, second) {
@@ -109,6 +95,15 @@ fn discover_directory(
   route_path: String,
 ) -> Result(List(Route), RouteError) {
   use routes <- result.try(route_at(directory, route_path))
+  discover_children(directory, route_path, routes, discover_directory)
+}
+
+fn discover_children(
+  directory: String,
+  route_path: String,
+  routes: List(Route),
+  discover: fn(String, String) -> Result(List(Route), RouteError),
+) -> Result(List(Route), RouteError) {
   use entries <- result.try(
     simplifile.read_directory(directory)
     |> result.map_error(fn(_) { CannotDiscoverRoutes }),
@@ -118,11 +113,11 @@ fn discover_directory(
     let child_directory = directory <> "/" <> name
     case is_private_segment(name), simplifile.is_directory(child_directory) {
       False, Ok(True) -> {
-        let child_path = case route_path {
-          "/" -> "/" <> name
-          _ -> route_path <> "/" <> name
+        let child_path = case string.ends_with(route_path, "/") {
+          True -> route_path <> name
+          False -> route_path <> "/" <> name
         }
-        discover_directory(child_directory, child_path)
+        discover(child_directory, child_path)
         |> result.map(fn(children) { list.append(found, children) })
       }
       _, _ -> Ok(found)

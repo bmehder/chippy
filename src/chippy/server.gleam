@@ -133,16 +133,12 @@ fn asset_or_not_found(
 
 fn sitemap_response(site: site_config.Site) -> Response(mist.ResponseData) {
   case route.discover_routes() {
-    Ok(routes) -> {
-      let body =
-        sitemap.render(site.url, routes)
-        |> bytes_tree.from_string
-        |> mist.Bytes
-
-      response.new(200)
-      |> response.set_header("content-type", "application/xml; charset=utf-8")
-      |> response.set_body(body)
-    }
+    Ok(routes) ->
+      string_response(
+        status: 200,
+        content_type: "application/xml; charset=utf-8",
+        body: sitemap.render(site.url, routes),
+      )
     Error(_) ->
       error_response(
         site:,
@@ -186,13 +182,20 @@ fn error_response(
 }
 
 fn html_response(status: Int, body: String) -> Response(mist.ResponseData) {
-  response.new(status)
-  |> response.set_header("content-type", "text/html; charset=utf-8")
-  |> response.set_body(mist.Bytes(bytes_tree.from_string(body)))
+  string_response(status:, content_type: "text/html; charset=utf-8", body:)
 }
 
 fn text_response(status: Int, body: String) -> Response(mist.ResponseData) {
+  string_response(status:, content_type: "text/plain; charset=utf-8", body:)
+}
+
+fn string_response(
+  status status: Int,
+  content_type content_type: String,
+  body body: String,
+) -> Response(mist.ResponseData) {
+  let body = body |> bytes_tree.from_string |> mist.Bytes
   response.new(status)
-  |> response.set_header("content-type", "text/plain; charset=utf-8")
-  |> response.set_body(mist.Bytes(bytes_tree.from_string(body)))
+  |> response.set_header("content-type", content_type)
+  |> response.set_body(body)
 }
