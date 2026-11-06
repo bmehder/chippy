@@ -84,41 +84,6 @@ pub fn render_error(
   Ok(template.render(layout, document, content, site, None))
 }
 
-/// Resolve a public asset URL to an existing file Mist may safely serve.
-///
-/// Global assets, generated reference files, and route-colocated files have
-/// distinct roots. Traversal attempts and Chippy implementation files fail.
-pub fn asset_path(request_path: String) -> Result(String, PageError) {
-  use relative <- result.try(
-    route.safe_relative_path(request_path) |> result.map_error(from_route_error),
-  )
-  case relative {
-    "" -> Error(NotFound)
-    _ -> {
-      let path = case relative {
-        "reference" -> "reference/index.html"
-        _ ->
-          case string.starts_with(relative, "reference/") {
-            True -> relative
-            False ->
-              case string.starts_with(relative, "assets/") {
-                True -> relative
-                False -> "routes/" <> relative
-              }
-          }
-      }
-      case route.is_private_path(relative) {
-        True -> Error(NotFound)
-        False ->
-          case simplifile.is_file(path) {
-            Ok(True) -> Ok(path)
-            _ -> Error(NotFound)
-          }
-      }
-    }
-  }
-}
-
 fn insert_named(markdown: String, insertion: #(String, String)) -> String {
   let #(name, value) = insertion
   string.replace(markdown, "<!-- " <> name <> " -->", value)

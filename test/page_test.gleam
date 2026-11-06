@@ -80,29 +80,6 @@ pub fn renders_errors_with_the_site_layout_test() {
   html |> string.contains("class=\"error-page\"") |> should.be_true
 }
 
-pub fn serves_colocated_assets_test() {
-  page.asset_path("/about/notes.txt")
-  |> should.equal(Ok("routes/about/notes.txt"))
-  page.asset_path("/posts/gleam-or-php/gleam-or-php.webp")
-  |> should.equal(Ok("routes/posts/gleam-or-php/gleam-or-php.webp"))
-}
-
-pub fn serves_global_assets_test() {
-  page.asset_path("/assets/site.css")
-  |> should.equal(Ok("assets/site.css"))
-  page.asset_path("/assets/favicon.svg")
-  |> should.equal(Ok("assets/favicon.svg"))
-}
-
-pub fn serves_generated_reference_files_test() {
-  page.asset_path("/reference/")
-  |> should.equal(Ok("reference/index.html"))
-  page.asset_path("/reference/chippy/page.html")
-  |> should.equal(Ok("reference/chippy/page.html"))
-  page.asset_path("/reference/docs_config.js")
-  |> should.equal(Ok("reference/docs_config.js"))
-}
-
 pub fn maps_directories_to_routes_test() {
   let assert Ok(html) = page.render("/about", test_support.demo_site())
   html
@@ -142,15 +119,4 @@ pub fn composes_nested_route_layouts_test() {
   article |> string.contains("<!doctype html>") |> should.be_true
   comparison |> string.contains("class=\"posts-layout\"") |> should.be_true
   about |> string.contains("class=\"posts-layout\"") |> should.be_false
-}
-
-pub fn keeps_chippy_files_private_test() {
-  page.asset_path("/+page.md") |> should.equal(Error(page.NotFound))
-  page.asset_path("/_partials/header.html")
-  |> should.equal(Error(page.NotFound))
-}
-
-pub fn rejects_parent_directory_segments_test() {
-  page.asset_path("/../gleam.toml")
-  |> should.equal(Error(page.UnsafePath))
 }

@@ -1,3 +1,4 @@
+import chippy/asset
 import chippy/contact
 import chippy/page
 import chippy/route
@@ -7,10 +8,8 @@ import gleam/bytes_tree
 import gleam/http
 import gleam/http/request.{type Request}
 import gleam/http/response.{type Response}
-import gleam/list
 import gleam/option.{None}
 import gleam/result
-import gleam/string
 import mist
 
 /// A failure to load site identity or start the Mist listener.
@@ -120,7 +119,7 @@ fn asset_or_not_found(
   path: String,
   site: site_config.Site,
 ) -> Response(mist.ResponseData) {
-  case page.asset_path(path) {
+  case asset.resolve(path) {
     Ok(path) -> file_response(path, site)
     Error(_) ->
       error_response(
@@ -161,7 +160,7 @@ fn file_response(
   case mist.send_file(path, offset: 0, limit: None) {
     Ok(body) ->
       response.new(200)
-      |> response.set_header("content-type", content_type(path))
+      |> response.set_header("content-type", asset.content_type(path))
       |> response.set_header("x-content-type-options", "nosniff")
       |> response.set_body(body)
     Error(_) ->
@@ -196,36 +195,4 @@ fn text_response(status: Int, body: String) -> Response(mist.ResponseData) {
   response.new(status)
   |> response.set_header("content-type", "text/plain; charset=utf-8")
   |> response.set_body(mist.Bytes(bytes_tree.from_string(body)))
-}
-
-fn content_type(path: String) -> String {
-  case file_extension(path) {
-    "html" -> "text/html; charset=utf-8"
-    "css" -> "text/css; charset=utf-8"
-    "js" -> "text/javascript; charset=utf-8"
-    "json" -> "application/json; charset=utf-8"
-    "svg" -> "image/svg+xml"
-    "png" -> "image/png"
-    "jpg" | "jpeg" -> "image/jpeg"
-    "gif" -> "image/gif"
-    "webp" -> "image/webp"
-    "ico" -> "image/x-icon"
-    "woff" -> "font/woff"
-    "woff2" -> "font/woff2"
-    "txt" -> "text/plain; charset=utf-8"
-    _ -> "application/octet-stream"
-  }
-}
-
-fn file_extension(path: String) -> String {
-  let filename = path |> string.split("/") |> list.last |> result.unwrap("")
-  case string.split(filename, ".") {
-    ["", _] -> ""
-    [_, extension, ..rest] ->
-      [extension, ..rest]
-      |> list.last
-      |> result.unwrap("")
-      |> string.lowercase
-    _ -> ""
-  }
 }
