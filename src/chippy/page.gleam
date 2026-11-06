@@ -64,17 +64,22 @@ pub fn render_with(
 }
 
 /// Render a noindexed error document through the site's root presentation.
+/// The heading and message also supply the page title and description.
 /// The caller remains responsible for choosing the HTTP status code.
 pub fn render_error(
-  site: Site,
-  title: String,
-  description: String,
-  heading: String,
-  message: String,
+  site site: Site,
+  heading heading: String,
+  message message: String,
 ) -> Result(String, PageError) {
   use layout <- result.try(load_template("routes"))
   let document =
-    Document(title:, description:, published: "", noindex: True, markdown: "")
+    Document(
+      title: heading,
+      description: message,
+      published: "",
+      noindex: True,
+      markdown: "",
+    )
   let content =
     "<section class=\"error-page\"><p class=\"eyebrow\">Chippy</p><h1>"
     <> template.escape_html(heading)

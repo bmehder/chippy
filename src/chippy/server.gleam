@@ -175,7 +175,7 @@ fn error_response(
   heading heading: String,
   message message: String,
 ) -> Response(mist.ResponseData) {
-  case page.render_error(site, heading, message, heading, message) {
+  case page.render_error(site:, heading:, message:) {
     Ok(html) -> html_response(status, html)
     Error(_) -> text_response(status, message)
   }

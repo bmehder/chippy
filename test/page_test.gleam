@@ -68,11 +68,9 @@ pub fn renders_the_shared_portable_page_test() {
 pub fn renders_errors_with_the_site_layout_test() {
   let assert Ok(html) =
     page.render_error(
-      test_support.demo_site(),
-      "Page not found",
-      "There is no page at this address.",
-      "Page not found",
-      "There is no page at this address.",
+      site: test_support.demo_site(),
+      heading: "Page not found",
+      message: "There is no page at this address.",
     )
   html
   |> string.contains("<meta name=\"robots\" content=\"noindex\">")
