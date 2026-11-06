@@ -47,9 +47,20 @@ pub fn parse_port(value: String) -> Result(Int, ConfigError) {
 }
 
 /// Check whether the requested address can be bound before Mist starts.
+pub type PortProbe {
+  Available
+  AddressInUse
+  BindFailed(String)
+}
+
 /// Availability can still change between this Erlang preflight and real bind.
-@external(erlang, "chippy_ffi", "port_is_available")
-pub fn port_is_available(host: String, port: Int) -> Bool
+@external(erlang, "chippy_ffi", "probe_port")
+pub fn probe_port(host: String, port: Int) -> PortProbe
+
+/// Check whether the temporary listener can bind to this address.
+pub fn port_is_available(host: String, port: Int) -> Bool {
+  probe_port(host, port) == Available
+}
 
 fn parse_host(value: String) -> Result(String, ConfigError) {
   let value = string.trim(value)

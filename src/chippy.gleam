@@ -22,9 +22,19 @@ pub fn main() -> Nil {
         <> "'. Use localhost or an IPv4 address such as 127.0.0.1 or 0.0.0.0.",
       )
     Ok(config) ->
-      case server_config.port_is_available(config.host, config.port) {
-        False -> address_in_use(config.host, config.port)
-        True ->
+      case server_config.probe_port(config.host, config.port) {
+        server_config.AddressInUse -> address_in_use(config.host, config.port)
+        server_config.BindFailed(reason) ->
+          stop(
+            "Could not listen on "
+            <> config.host
+            <> ":"
+            <> int.to_string(config.port)
+            <> " ("
+            <> reason
+            <> ").",
+          )
+        server_config.Available ->
           case server.start(config.host, config.port) {
             Ok(_) -> process.sleep_forever()
             Error(server.InvalidSiteConfiguration(_)) ->
@@ -32,7 +42,13 @@ pub fn main() -> Nil {
                 "Could not start Chippy because site.toml is missing or invalid.",
               )
             Error(server.ServerStartFailed(host, port)) ->
-              address_in_use(host, port)
+              stop(
+                "Could not start Chippy on "
+                <> host
+                <> ":"
+                <> int.to_string(port)
+                <> ".",
+              )
           }
       }
   }
