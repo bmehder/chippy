@@ -132,12 +132,16 @@ fn asset_or_not_found(
 
 fn sitemap_response(site: site_config.Site) -> Response(mist.ResponseData) {
   case page.discover_routes() {
-    Ok(routes) ->
+    Ok(routes) -> {
+      let body =
+        sitemap.render(site.url, routes)
+        |> bytes_tree.from_string
+        |> mist.Bytes
+
       response.new(200)
       |> response.set_header("content-type", "application/xml; charset=utf-8")
-      |> response.set_body(
-        mist.Bytes(bytes_tree.from_string(sitemap.render(site.url, routes))),
-      )
+      |> response.set_body(body)
+    }
     Error(_) ->
       error_response(
         site:,
