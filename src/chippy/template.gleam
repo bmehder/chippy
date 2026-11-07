@@ -83,7 +83,7 @@ fn render_metadata(
   canonical_url: Option(String),
 ) -> String {
   let robots = case document.noindex {
-    True -> "    <meta name=\"robots\" content=\"noindex\">\n"
+    True -> "<meta name=\"robots\" content=\"noindex\">\n"
     False -> ""
   }
   case canonical_url {
@@ -94,27 +94,27 @@ fn render_metadata(
       let description = escape_html(document.description)
       let site_name = escape_html(site.name)
       robots
-      <> "    <link rel=\"canonical\" href=\""
+      <> "<link rel=\"canonical\" href=\""
       <> canonical_url
       <> "\">\n"
-      <> "    <meta property=\"og:site_name\" content=\""
+      <> "<meta property=\"og:site_name\" content=\""
       <> site_name
       <> "\">\n"
-      <> "    <meta property=\"og:type\" content=\"website\">\n"
-      <> "    <meta property=\"og:title\" content=\""
+      <> "<meta property=\"og:type\" content=\"website\">\n"
+      <> "<meta property=\"og:title\" content=\""
       <> title
       <> "\">\n"
-      <> "    <meta property=\"og:description\" content=\""
+      <> "<meta property=\"og:description\" content=\""
       <> description
       <> "\">\n"
-      <> "    <meta property=\"og:url\" content=\""
+      <> "<meta property=\"og:url\" content=\""
       <> canonical_url
       <> "\">\n"
-      <> "    <meta name=\"twitter:card\" content=\"summary\">\n"
-      <> "    <meta name=\"twitter:title\" content=\""
+      <> "<meta name=\"twitter:card\" content=\"summary\">\n"
+      <> "<meta name=\"twitter:title\" content=\""
       <> title
       <> "\">\n"
-      <> "    <meta name=\"twitter:description\" content=\""
+      <> "<meta name=\"twitter:description\" content=\""
       <> description
       <> "\">"
     }
