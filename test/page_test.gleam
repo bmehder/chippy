@@ -16,7 +16,11 @@ pub fn renders_the_home_page_test() {
   html
   |> string.contains("Server-rendered Markdown in Gleam")
   |> should.be_true
-  html |> string.contains("{{ content }}") |> should.be_false
+  html |> string.contains("<code>{{ content }}</code>") |> should.be_true
+  html
+  |> string.replace("<code>{{ content }}</code>", "")
+  |> string.contains("{{ content }}")
+  |> should.be_false
   html |> string.contains("{{ metadata }}") |> should.be_false
   html |> string.contains("<html lang=\"en\">") |> should.be_true
   html
