@@ -122,6 +122,12 @@ a request, or `None` to delegate to Chippy's page, asset, and sitemap routes.
 The entry point connects this handler through `server.start_with`. Site authors
 can add handlers under `src/site/` without changing `src/chippy/`.
 
+Dynamic HTML uses explicit markers such as `{{ insertion:contact-feedback }}`.
+The contact GET handler supplies an empty feedback value; POST supplies the
+result message. Handlers pass these values to `page.render_with` using its
+`insertions:` argument. Insertions are trusted HTML and should be escaped
+before including visitor input.
+
 ## Metadata
 
 Chippy recognizes three required fields and one optional flag:

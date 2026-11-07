@@ -12,6 +12,6 @@ This form is a demonstration, not a way to reach anyone. Each submission
 randomly succeeds or fails. Even a successful result sends no email and stores
 nothing.
 
-<!-- contact-feedback -->
+{{ insertion:contact-feedback }}
 
 {{ partial:contact-form }}

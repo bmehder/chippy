@@ -183,6 +183,11 @@ requests to Chippy by returning `None`. The contact handler lives in
 `src/site/contact.gleam`; its form is the `contact-form` partial, inserted
 from `routes/_partials/contact-form.html` into the contact Markdown page.
 
+The page reserves `{{ insertion:contact-feedback }}` for dynamic HTML.
+The GET handler supplies an empty string, and the POST handler supplies the
+result message through `page.render_with`. These explicit insertion markers
+identify functional slots in the page source.
+
 The contact handler reads a size-limited request body, but it neither decodes
 nor stores the fields and never contacts an email service. Its only purpose is
 to demonstrate a server-rendered form response.

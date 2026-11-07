@@ -12,6 +12,7 @@ pub fn handle(
   site: Site,
 ) -> Option(Response(mist.ResponseData)) {
   case request.method, request.path {
+    http.Get, "/contact" -> Some(contact.show(site))
     http.Post, "/contact" -> Some(contact.handle(request, site))
     _, _ -> None
   }

@@ -31,7 +31,7 @@ pub fn render(request_path: String, site: Site) -> Result(String, PageError) {
 
 /// Render a page after applying named HTML insertions to its Markdown source.
 ///
-/// An insertion named `notice` replaces `<!-- notice -->`. This narrow trusted
+/// An insertion named `notice` replaces `{{ insertion:notice }}`. This narrow trusted
 /// extension point supports dynamic server responses without a template DSL.
 pub fn render_with(
   request_path request_path: String,
@@ -95,7 +95,7 @@ pub fn render_error(
 
 fn insert_named(markdown: String, insertion: #(String, String)) -> String {
   let #(name, value) = insertion
-  string.replace(markdown, "<!-- " <> name <> " -->", value)
+  string.replace(markdown, "{{ insertion:" <> name <> " }}", value)
 }
 
 fn insert_collection(

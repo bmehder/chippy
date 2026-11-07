@@ -89,7 +89,8 @@ layouts and page source.
   inserted values, and renders document metadata.
 - `src/site.gleam` registers custom site requests through the startup handler.
 - `src/site/contact.gleam` contains the demo form's simulated outcome and
-  supplies its feedback through the page renderer's named-insertion API.
+  supplies its feedback through `{{ insertion:contact-feedback }}`. The site's
+  GET handler explicitly supplies an empty value before submission.
 - `src/chippy/server.gleam` owns HTTP methods, statuses, headers,
   the sitemap route, site configuration loading, and Mist response bodies.
 - `src/chippy/server_config.gleam` validates the optional `HOST` and `PORT`

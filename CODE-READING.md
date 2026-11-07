@@ -1,5 +1,9 @@
 # Reading Chippy's source
 
+In the contact example, follow `{{ insertion:contact-feedback }}` from the page
+source to `src/site/contact.gleam`. It supplies an empty value for GET and
+feedback HTML for POST through `page.render_with`.
+
 Read these in order for a first pass. In `server.gleam`, start with `handle` and follow a GET request for `/` into `page.render`. Then come back for the other request paths.
 
 Before reading the default request handler, glance at [src/site.gleam](src/site.gleam). Startup passes this site's handler to `server.start_with`. Every request reaches it first. It handles contact submissions and returns `None` for requests that Chippy should handle.
