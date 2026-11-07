@@ -35,6 +35,7 @@ published: 2026-10-03
 
 ```text
 routes/
+├── +layout.html            → shared document, header, and footer
 ├── +page.md                 → /
 ├── about/+page.md           → /about
 └── posts/
@@ -48,5 +49,9 @@ routes/
 
 Files beginning with `+` describe Chippy. Ordinary files are served normally,
 which makes route-local CSS, JavaScript, images, and downloads unsurprising.
+
+The root `+layout.html` wraps every page. A nested layout, like the one in
+`posts/`, adds a wrapper for that route and its children. Each layout uses
+`{{ content }}` to place the next layout or page inside it.
 
 <aside class="callout"><strong>The project is the demo.</strong> This page is loaded from <code>routes/+page.md</code>, rendered by the same code documented in the repository, and styled by Tailwind-generated CSS served from <code>assets/</code>.</aside>
