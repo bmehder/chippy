@@ -26,7 +26,7 @@ pub type PageError {
 /// Paths map to `routes/<path>/+page.md`; layouts compose from the route root
 /// downward, and content is read afresh on every request.
 pub fn render(request_path: String, site: Site) -> Result(String, PageError) {
-  render_with(request_path, site, [])
+  render_with(request_path:, site:, insertions: [])
 }
 
 /// Render a page after applying named HTML insertions to its Markdown source.
@@ -34,9 +34,9 @@ pub fn render(request_path: String, site: Site) -> Result(String, PageError) {
 /// An insertion named `notice` replaces `<!-- notice -->`. This narrow trusted
 /// extension point supports dynamic server responses without a template DSL.
 pub fn render_with(
-  request_path: String,
-  site: Site,
-  insertions: List(#(String, String)),
+  request_path request_path: String,
+  site site: Site,
+  insertions insertions: List(#(String, String)),
 ) -> Result(String, PageError) {
   use route_directory <- result.try(
     route.route_directory(request_path) |> result.map_error(from_route_error),

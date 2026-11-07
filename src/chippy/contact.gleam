@@ -27,5 +27,7 @@ pub fn render(site: Site, outcome: Outcome) -> Result(String, page.PageError) {
     Failed ->
       "<aside class=\"form-feedback form-feedback-failure\" role=\"alert\"><strong>That one failed on purpose.</strong><p>Nothing was sent. Try again and the imaginary mail server may be kinder.</p></aside>"
   }
-  page.render_with("/contact", site, [#("contact-feedback", feedback)])
+  page.render_with(request_path: "/contact", site:, insertions: [
+    #("contact-feedback", feedback),
+  ])
 }
