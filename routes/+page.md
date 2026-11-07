@@ -38,17 +38,21 @@ routes/
 ├── +layout.html            → shared document, header, and footer
 ├── +page.md                 → /
 ├── about/+page.md           → /about
-└── posts/
-    ├── +page.md             → /posts
-    ├── +layout.html         → wraps every /posts route
-    ├── inside-chippy/
-    │   ├── +page.md         → /posts/inside-chippy
-    │   └── request-flow.txt → /posts/inside-chippy/request-flow.txt
-    └── …                    → more article folders
+├── posts/
+│   ├── +page.md             → /posts
+│   ├── +layout.html         → wraps every /posts route
+│   ├── inside-chippy/
+│   │   ├── +page.md         → /posts/inside-chippy
+│   │   └── request-flow.txt → /posts/inside-chippy/request-flow.txt
+│   └── …                    → more article folders
+└── _partials/
+    └── header.html          → shared header, included by the layout
 ```
 
 Files beginning with `+` describe Chippy. Ordinary files are served normally,
 which makes route-local CSS, JavaScript, images, and downloads unsurprising.
+Files and folders beginning with `_` are private. The `_partials/` folder
+holds reusable HTML, such as the header inserted with `{{ partial:header }}`.
 
 The root `+layout.html` wraps every page. A nested layout, like the one in
 `posts/`, adds a wrapper for that route and its children. Each layout uses
