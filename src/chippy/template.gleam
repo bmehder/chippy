@@ -136,7 +136,8 @@ fn layout_directories(route_directory: String) -> List(String) {
   directories
 }
 
-fn insert_partials(layout: String) -> Result(String, TemplateError) {
+/// Expand root partial references in layout or page source.
+pub fn insert_partials(layout: String) -> Result(String, TemplateError) {
   use filenames <- result.try(
     simplifile.read_directory("routes/_partials")
     |> result.map_error(fn(_) { CannotReadPartials }),

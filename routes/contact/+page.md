@@ -14,18 +14,4 @@ nothing.
 
 <!-- contact-feedback -->
 
-<form class="contact-form" action="/contact" method="post">
-  <div class="form-field">
-    <label for="name">Name</label>
-    <input id="name" name="name" type="text" autocomplete="name" required>
-  </div>
-  <div class="form-field">
-    <label for="email">Email</label>
-    <input id="email" name="email" type="email" autocomplete="email" required>
-  </div>
-  <div class="form-field">
-    <label for="message">Message</label>
-    <textarea id="message" name="message" rows="6" required></textarea>
-  </div>
-  <button class="primary-button" type="submit">Pretend to send</button>
-</form>
+{{ partial:contact-form }}

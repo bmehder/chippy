@@ -70,17 +70,19 @@ Mist request
   → Mist response
 ```
 
-- `src/chippy/page.gleam` orchestrates page rendering and owns safe path
-  resolution, collections, route discovery, and static-file resolution.
+- `src/chippy/page.gleam` orchestrates page rendering and collection markup.
+- `src/chippy/route.gleam` owns safe path resolution and route discovery.
+- `src/chippy/asset.gleam` resolves static files and determines content types.
 - `src/chippy/document.gleam` owns the page document type, frontmatter parsing,
   YAML interpretation, and metadata validation.
 - `src/chippy/markdown.gleam` owns the Mörk configuration and enables heading
   IDs and tables in addition to CommonMark and footnotes.
 - `src/chippy/template.gleam` composes nested layouts and partials, escapes
   inserted values, and renders document metadata.
-- `src/chippy/contact.gleam` contains the demo form's simulated outcome and
+- `src/site.gleam` registers custom site requests through the startup handler.
+- `src/site/contact.gleam` contains the demo form's simulated outcome and
   supplies its feedback through the page renderer's named-insertion API.
-- `src/chippy/server.gleam` owns HTTP methods, statuses, headers, content types,
+- `src/chippy/server.gleam` owns HTTP methods, statuses, headers,
   the sitemap route, site configuration loading, and Mist response bodies.
 - `src/chippy/server_config.gleam` validates the optional `HOST` and `PORT`
   environment values and checks that the selected address is available before

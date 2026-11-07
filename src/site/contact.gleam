@@ -1,6 +1,10 @@
 import chippy/page
+import chippy/server
 import chippy/site.{type Site}
 import gleam/crypto
+import gleam/http/request.{type Request}
+import gleam/http/response.{type Response}
+import mist
 
 /// The deliberately simulated result of the demo contact form.
 /// Neither outcome sends or stores the submitted data.
@@ -30,4 +34,33 @@ pub fn render(site: Site, outcome: Outcome) -> Result(String, page.PageError) {
   page.render_with(request_path: "/contact", site:, insertions: [
     #("contact-feedback", feedback),
   ])
+}
+
+/// Read a contact submission and render the demo feedback.
+pub fn handle(
+  request: Request(mist.Connection),
+  site: Site,
+) -> Response(mist.ResponseData) {
+  case mist.read_body(request, max_body_limit: 64_000) {
+    Ok(_) -> {
+      let outcome = random_outcome()
+      case render(site, outcome) {
+        Ok(html) -> server.html_response(200, html)
+        Error(_) ->
+          server.error_response(
+            site:,
+            status: 500,
+            heading: "Rendering failed",
+            message: "Chippy could not render the contact response.",
+          )
+      }
+    }
+    Error(_) ->
+      server.error_response(
+        site:,
+        status: 400,
+        heading: "Invalid submission",
+        message: "The contact form submission could not be read.",
+      )
+  }
 }

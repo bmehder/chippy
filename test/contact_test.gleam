@@ -1,7 +1,7 @@
-import chippy/contact
 import chippy/page
 import gleam/string
 import gleeunit/should
+import site/contact
 import test_support
 
 pub fn renders_the_contact_form_without_feedback_test() {

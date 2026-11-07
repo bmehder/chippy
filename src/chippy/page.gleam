@@ -52,6 +52,10 @@ pub fn render_with(
     route_directory,
     request_path,
   ))
+  use markdown <- result.try(
+    template.insert_partials(markdown)
+    |> result.map_error(fn(_) { CannotReadPartials }),
+  )
   let markdown = insertions |> list.fold(markdown, insert_named)
   let content = markdown.render(markdown)
   Ok(template.render(

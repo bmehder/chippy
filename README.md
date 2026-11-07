@@ -109,11 +109,17 @@ throughout.
 
 ## Contact demo
 
-`/contact` contains a plain HTML form inside its Markdown page. Its POST handler
+`/contact` inserts `routes/_partials/contact-form.html` into its Markdown page
+using `{{ partial:contact-form }}`. Its POST handler in `src/site/contact.gleam`
 reads a size-limited body and randomly renders either success or failure
 feedback. This is intentionally theatre: it decodes nothing, stores nothing,
 and never sends an email. The small feature demonstrates that Chippy is a
 dynamic server rather than a static-site build.
+
+Register custom requests in `src/site.gleam`. Return `Some(response)` to handle
+a request, or `None` to delegate to Chippy's page, asset, and sitemap routes.
+The entry point connects this handler through `server.start_with`. Site authors
+can add handlers under `src/site/` without changing `src/chippy/`.
 
 ## Metadata
 

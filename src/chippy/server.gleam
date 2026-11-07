@@ -1,5 +1,4 @@
 import chippy/asset
-import chippy/contact
 import chippy/page
 import chippy/route
 import chippy/site as site_config
@@ -8,7 +7,7 @@ import gleam/bytes_tree
 import gleam/http
 import gleam/http/request.{type Request}
 import gleam/http/response.{type Response}
-import gleam/option.{None}
+import gleam/option.{type Option, None, Some}
 import gleam/result
 import mist
 
@@ -21,12 +20,25 @@ pub type StartError {
 /// Load `site.toml` and start Mist at an already validated address.
 /// Callers normally use `chippy.main`, which performs listener preflight.
 pub fn start(host: String, port: Int) -> Result(Nil, StartError) {
+  start_with(host:, port:, handler: fn(_, _) { None })
+}
+
+/// Start with a site handler. Returning None delegates to Chippy's routes.
+pub fn start_with(
+  host host: String,
+  port port: Int,
+  handler handler: fn(Request(mist.Connection), site_config.Site) ->
+    Option(Response(mist.ResponseData)),
+) -> Result(Nil, StartError) {
   use site <- result.try(
     site_config.load("site.toml")
     |> result.map_error(InvalidSiteConfiguration),
   )
   fn(request: Request(mist.Connection)) -> Response(mist.ResponseData) {
-    handle(request, site)
+    case handler(request, site) {
+      Some(response) -> response
+      None -> handle(request, site)
+    }
   }
   |> mist.new
   |> mist.bind(host)
@@ -38,49 +50,13 @@ pub fn start(host: String, port: Int) -> Result(Nil, StartError) {
 
 /// Convert one Mist request into a Chippy response.
 ///
-/// GET tries Markdown pages before static files. POST is limited to the demo
-/// contact route, and all other methods receive `405`.
+/// GET tries Markdown pages before static files. Other methods receive 405.
 pub fn handle(
   request: Request(mist.Connection),
   site: site_config.Site,
 ) -> Response(mist.ResponseData) {
   case request.method {
     http.Get -> get(request, site)
-    http.Post -> post(request, site)
-    _ ->
-      text_response(405, "Method not allowed")
-      |> response.set_header("allow", "GET, POST")
-  }
-}
-
-fn post(
-  request: Request(mist.Connection),
-  site: site_config.Site,
-) -> Response(mist.ResponseData) {
-  case request.path {
-    "/contact" ->
-      case mist.read_body(request, max_body_limit: 64_000) {
-        Ok(_) -> {
-          let outcome = contact.random_outcome()
-          case contact.render(site, outcome) {
-            Ok(html) -> html_response(200, html)
-            Error(_) ->
-              error_response(
-                site:,
-                status: 500,
-                heading: "Rendering failed",
-                message: "Chippy could not render the contact response.",
-              )
-          }
-        }
-        Error(_) ->
-          error_response(
-            site:,
-            status: 400,
-            heading: "Invalid submission",
-            message: "The contact form submission could not be read.",
-          )
-      }
     _ ->
       text_response(405, "Method not allowed")
       |> response.set_header("allow", "GET")
@@ -169,7 +145,8 @@ fn file_response(
   }
 }
 
-fn error_response(
+/// Render a site-styled error response with a plain-text fallback.
+pub fn error_response(
   site site: site_config.Site,
   status status: Int,
   heading heading: String,
@@ -181,7 +158,8 @@ fn error_response(
   }
 }
 
-fn html_response(status: Int, body: String) -> Response(mist.ResponseData) {
+/// Build an HTML response for rendered site content.
+pub fn html_response(status: Int, body: String) -> Response(mist.ResponseData) {
   string_response(status:, content_type: "text/html; charset=utf-8", body:)
 }
 

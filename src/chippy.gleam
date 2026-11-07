@@ -3,6 +3,7 @@ import chippy/server_config
 import gleam/erlang/process
 import gleam/int
 import gleam/io
+import site
 
 @external(erlang, "erlang", "halt")
 fn halt(code: Int) -> Nil
@@ -37,7 +38,13 @@ pub fn main() -> Nil {
             <> ").",
           )
         server_config.Available ->
-          case server.start(config.host, config.port) {
+          case
+            server.start_with(
+              host: config.host,
+              port: config.port,
+              handler: site.handle,
+            )
+          {
             Ok(_) -> process.sleep_forever()
             Error(server.InvalidSiteConfiguration(_)) ->
               fail_startup(

@@ -173,6 +173,11 @@ The domain errors become HTTP responses at this boundary:
 - unsupported method or POST route → `405`
 - rendering failure → layout-rendered `500`
 
+Custom requests are registered in `src/site.gleam`, which delegates ordinary
+requests to Chippy by returning `None`. The contact handler lives in
+`src/site/contact.gleam`; its form is the `contact-form` partial, inserted
+from `routes/_partials/contact-form.html` into the contact Markdown page.
+
 The contact handler reads a size-limited request body, but it neither decodes
 nor stores the fields and never contacts an email service. Its only purpose is
 to demonstrate a server-rendered form response.
