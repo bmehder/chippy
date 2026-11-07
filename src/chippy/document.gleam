@@ -31,12 +31,12 @@ pub type DocumentError {
 /// real calendar dates in `YYYY-MM-DD` form.
 pub fn parse(source: String) -> Result(Document, DocumentError) {
   let #(frontmatter, markdown) = mork.split_frontmatter_from_input(source)
-  use metadata <- result.try(parse_metadata(frontmatter))
-  use title <- result.try(required_string(metadata, "title"))
-  use description <- result.try(required_string(metadata, "description"))
-  use published <- result.try(required_string(metadata, "published"))
-  use _ <- result.try(validate_published(published))
-  use noindex <- result.try(metadata_flag(metadata, "noindex"))
+  use metadata <- result.try(frontmatter |> parse_metadata)
+  use title <- result.try(metadata |> required_string("title"))
+  use description <- result.try(metadata |> required_string("description"))
+  use published <- result.try(metadata |> required_string("published"))
+  use _ <- result.try(published |> validate_published)
+  use noindex <- result.try(metadata |> metadata_flag("noindex"))
   Ok(Document(title:, description:, published:, noindex:, markdown:))
 }
 
