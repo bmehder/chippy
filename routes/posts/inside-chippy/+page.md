@@ -27,7 +27,9 @@ routes/                 Pages and route-colocated static files
 assets/                 Site-wide static files
 styles/                 Tailwind source CSS
 site.toml               Site-wide identity and public URL
-src/chippy/             Application modules
+src/chippy/             Reusable rendering and HTTP modules
+src/site.gleam          Custom site request dispatch
+src/site/               Site-specific handlers
 test/                   Tests
 ```
 
@@ -54,7 +56,7 @@ from starting instead of quietly publishing incorrect metadata.
 
 ## 3. Turn the request path into a directory
 
-Open `src/chippy/page.gleam`. `safe_relative_path` removes the leading slash and
+Open `src/chippy/route.gleam`. `safe_relative_path` removes the leading slash and
 rejects parent-directory or backslash traversal. `route_directory` then places
 the safe path beneath `routes/`.
 
@@ -151,8 +153,8 @@ The metadata slot contains canonical, Open Graph, and Twitter tags, plus a
 robots directive for noindexed pages. Page and site values are escaped before
 they enter the layout.
 
-Files under `routes/_partials/` are available through markers such as `{{
-partial:header }}`. This is intentionally not a general template language. The
+Files under `routes/_partials/` are available in layouts and page source through
+markers such as `{{ partial:header }}`. This is intentionally not a general template language. The
 layout remains an HTML file with a few obvious holes.
 
 The shared header contains normal desktop navigation and a mobile menu made
@@ -161,9 +163,12 @@ closing, keyboard focus, and disclosure state without client-side JavaScript.
 
 ## 8. Reach the HTTP boundary
 
-Open `src/chippy/server.gleam`. Mist passes each request to `handle`. A `GET`
-first attempts to render a page. If there is no page at that path, the server
-checks for a static file instead.
+Open `src/chippy/server.gleam`. The entry point connects `src/site.gleam`
+through `server.start_with`. Mist offers every request to that site handler
+first. A `Some(response)` is returned directly; `None` delegates to Chippy's
+default `handle` function. The default handler serves `/sitemap.xml` specially.
+For other GET requests, it attempts to render a page, then checks for a static
+file if the page is missing.
 
 The domain errors become HTTP responses at this boundary:
 
@@ -201,7 +206,7 @@ an ordinary file.
 
 ## 10. Discover the sitemap
 
-Open `src/chippy/page.gleam` again and find `discover_routes`. It walks the
+Open `src/chippy/route.gleam` again and find `discover_routes`. It walks the
 `routes/` tree, ignores private directories, reads each `+page.md`, and returns
 the same typed documents used by normal rendering.
 
@@ -267,7 +272,7 @@ live in the modules you have already read.
 1. Edit this paragraph and refresh the page.
 2. Change the site name in `site.toml` and inspect the page title and metadata.
 3. Add another child route beneath `routes/posts/` and refresh the collection.
-4. Add `routes/contact/+page.md` with the required metadata.
+4. Edit the form in `routes/_partials/contact-form.html` and refresh `/contact`.
 5. Submit `/contact` until you see both of its deliberately simulated outcomes.
 6. Add a CSS or text file beside a route and request that file directly.
 7. Add a partial under `routes/_partials/` and place its marker in the layout.

@@ -2,6 +2,8 @@
 
 Read these in order for a first pass. In `server.gleam`, start with `handle` and follow a GET request for `/` into `page.render`. Then come back for the other request paths.
 
+Before reading the default request handler, glance at [src/site.gleam](src/site.gleam). Startup passes this site's handler to `server.start_with`. Every request reaches it first. It handles contact submissions and returns `None` for requests that Chippy should handle.
+
 | Order | File | What to look for |
 | --- | --- | --- |
 | 1 | [chippy.gleam](src/chippy.gleam) | The entry point loads listener settings, probes the port, starts the server, and reports startup failures. |

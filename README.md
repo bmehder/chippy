@@ -23,8 +23,8 @@ when a hosting platform supplies a port:
 PORT=4000 gleam run
 ```
 
-Invalid and unavailable ports produce a short error with the next command to
-try.
+Invalid ports produce a validation error. If the address is already in use,
+Chippy suggests another port. Other bind failures report their error reason.
 
 Chippy binds to `127.0.0.1` by default for local development. A deployed
 service normally needs to accept traffic from outside its container:
@@ -86,6 +86,7 @@ routes/
 │       ├── +page.md
 │       └── request-time-rendering.webp
 └── _partials/
+    ├── contact-form.html
     ├── footer.html
     └── header.html
 ```
@@ -209,6 +210,7 @@ partials, return the correct `404` or `500` status, and are marked `noindex`.
 ## Learn the codebase
 
 - Read [DEVELOPMENT.md](DEVELOPMENT.md) to set up a development environment.
+- Follow [CODE-READING.md](CODE-READING.md) for a suggested source reading order.
 - Read [DEPLOYMENT.md](DEPLOYMENT.md) for the container and Fly.io deployment.
 - Read [CHANGELOG.md](CHANGELOG.md) for release history and versioning policy.
 - Run the site and open `/posts/inside-chippy` for a request-by-request tour.

@@ -57,18 +57,26 @@ push to `main` and every pull request.
 
 ## Architecture
 
-The request path is intentionally short:
+Startup loads `site.toml` once and connects `src/site.gleam` through
+`server.start_with`. For an ordinary page, the request path is:
 
 ```text
 Mist request
-  → chippy/server.gleam
-  → site.toml
+  → site.gleam (returns None for ordinary pages)
+  → chippy/server.gleam (default handler)
   → chippy/page.gleam
+  → chippy/route.gleam (validates and resolves the path)
   → routes/<path>/+page.md
   → chippy/document.gleam and chippy/markdown.gleam
   → chippy/template.gleam
   → Mist response
 ```
+
+For custom requests, `src/site.gleam` returns `Some(response)` instead.
+The contact demo delegates to `src/site/contact.gleam`, which reads the
+submission and renders feedback through the page renderer. Its form markup
+lives in `routes/_partials/contact-form.html`. Partial markers work in both
+layouts and page source.
 
 - `src/chippy/page.gleam` orchestrates page rendering and collection markup.
 - `src/chippy/route.gleam` owns safe path resolution and route discovery.
