@@ -30,7 +30,7 @@
   .site-name .site-word { @apply hidden h-auto w-auto bg-transparent font-sans text-text sm:block; }
   .site-nav { @apply hidden items-center gap-5 text-sm font-semibold md:flex; }
   .site-nav a { @apply text-muted no-underline hover:text-text; }
-  .site-nav .github-link { @apply flex items-center; }
+  .site-nav .github-link, .site-nav .reference-link { @apply flex items-center; }
   .mobile-menu { @apply relative md:hidden; }
   .mobile-menu summary { list-style: none; }
   .mobile-menu summary::-webkit-details-marker { display: none; }
