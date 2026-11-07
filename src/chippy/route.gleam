@@ -144,7 +144,5 @@ fn route_at(directory: String, route_path: String) {
 }
 
 fn is_private_segment(segment: String) -> Bool {
-  string.starts_with(segment, "+")
-  || string.starts_with(segment, "_")
-  || string.starts_with(segment, ".")
+  list.any(["+", "_", "."], fn(prefix) { string.starts_with(segment, prefix) })
 }
