@@ -43,7 +43,7 @@ pub fn from_values(host host_value: String, port port_value: String) {
 pub fn parse_port(value: String) -> Result(Int, ConfigError) {
   case int.parse(value) {
     Ok(port) if port > 0 && port <= 65_535 -> Ok(port)
-    _ -> Error(InvalidPort(value))
+    _ -> value |> InvalidPort |> Error
   }
 }
 
